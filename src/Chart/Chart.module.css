@@ -1,0 +1,72 @@
+.panel {
+  width: 90%;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 30px;
+  background: white;
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.title {
+  font-size: 45px;
+  font-weight: 300;
+  margin-bottom: 40px;
+}
+
+.body {
+  display: grid;
+  grid: auto / auto 1fr;
+}
+
+.setLabel {
+  grid-column: 1 / 2;
+  text-align: right;
+  padding: 0 10px;
+  align-self: center;
+}
+
+.bar {
+  grid-column: 2 / 3;
+  position: relative;
+  height: 50px;
+  border-top: 1px solid var(--color-grey--050);
+  overflow: hidden;
+}
+
+.scale {
+  grid-column: 2 / 3;
+  text-align: center;
+  border-top: 2px solid var(--color-grey--100);
+  font-size: 20px;
+}
+
+.scaleLabelWrapper {
+  position: relative;
+  height: 40px;
+}
+
+.scaleLabel {
+  position: absolute;
+  padding: 5px 0;
+  font-size: 12px;
+  color: var(--color-grey--600);
+}
+
+.scaleLabel::before {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 8px;
+  top: -2px;
+  left: 50%;
+  background: var(--color-grey--100);
+}
+
+.mark {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  width: 2px;
+  background: var(--color-blue--500);
+  filter: blur(1px);
+}
