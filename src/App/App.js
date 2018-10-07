@@ -270,6 +270,7 @@ class App extends Component {
             <option value="NEW SCENARIO">Add a new scenario</option>
           </select>
         </header>
+
         <div className={styles.page}>
           <Table
             scenario={currentScenario}
