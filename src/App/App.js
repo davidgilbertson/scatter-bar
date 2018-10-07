@@ -7,34 +7,62 @@ import Table from '../Table/Table';
 
 const findById = (arr, id) => arr.find(item => item.id === id);
 
+const LS_KEY = 'scenario-data';
+
+const addToLocalStorage = (key, data) => {
+  try {
+    const string = JSON.stringify(data);
+    window.localStorage.setItem(key, string);
+  } catch (err) {
+    console.error('Error saving to localStorage:', err);
+  }
+};
+
+const getFromLocalStorage = (key) => {
+  try {
+    return JSON.parse(localStorage.getItem(key));
+  } catch (err) {
+    console.error('Error reading from localStorage:', err);
+    return null;
+  }
+};
+
+
 class App extends Component {
   constructor(props) {
     super(props);
 
-    // const mockScenarios = parseMockData(mockData);
-    // console.log('  --  >  App.js:29 > mockScenarios', mockScenarios);
-    const mockScenarioId = uuid();
-    const scenario = {
-      id: mockScenarioId,
-      name: mockData.name,
-      sets: [],
-    };
+    const storedState = getFromLocalStorage(LS_KEY);
+    if (storedState) {
+      this.state = storedState;
+    } else {
+      const mockScenarioId = uuid();
+      const scenario = {
+        id: mockScenarioId,
+        name: mockData.name,
+        sets: [],
+      };
 
-    scenario.sets = mockData.sets.map(set => ({
-      id: uuid(),
-      ...set,
-    }));
+      scenario.sets = mockData.sets.map(set => ({
+        id: uuid(),
+        ...set,
+      }));
 
-    this.state = {
-      scenarios: [scenario],
-      currentScenarioId: mockScenarioId,
-    };
+      this.state = {
+        scenarios: [scenario],
+        currentScenarioId: mockScenarioId,
+      };
+    }
+  }
+
+  componentDidUpdate() {
+    addToLocalStorage(LS_KEY, this.state);
   }
 
   updateScenarioName = (newScenarioName) => {
     this.setState(state => {
-      const updatedScenarios = state.scenarios.map((scenario, scenarioIndex) => {
-        if (scenarioIndex !== state.currentScenarioIndex) return scenario;
+      const updatedScenarios = state.scenarios.map((scenario) => {
+        if (scenario.id !== state.currentScenarioId) return scenario;
 
         return {
           ...scenario,
@@ -50,15 +78,16 @@ class App extends Component {
 
   addSet = () => {
     this.setState(state => {
-      const updatedScenarios = state.scenarios.map((scenario, scenarioIndex) => {
-        if (scenarioIndex !== state.currentScenarioIndex) return scenario;
+      const updatedScenarios = state.scenarios.map((scenario) => {
+        if (scenario.id !== state.currentScenarioId) return scenario;
 
         return {
           ...scenario,
           sets: [
             ...scenario.sets,
             {
-              name: 'New set',
+              id: uuid(),
+              name: 'A new set',
               data: [],
             }
           ],
@@ -71,13 +100,13 @@ class App extends Component {
     });
   };
 
-  changeSetName = (newName, currentSetIndex) => {
+  changeSetName = (newName, currentSetId) => {
     this.setState(state => {
-      const updatedScenarios = state.scenarios.map((scenario, scenarioIndex) => {
-        if (scenarioIndex !== state.currentScenarioIndex) return scenario;
+      const updatedScenarios = state.scenarios.map((scenario) => {
+        if (scenario.id !== state.currentScenarioId) return scenario;
 
-        const updatedSets = scenario.sets.map((set, setIndex) => {
-          if (setIndex !== currentSetIndex) return set;
+        const updatedSets = scenario.sets.map(set => {
+          if (set.id !== currentSetId) return set;
 
           return {
             ...set,
@@ -127,25 +156,28 @@ class App extends Component {
   };
 
   addScenario = () => {
+    const id = uuid();
     this.setState(state => ({
       scenarios: [
         ...state.scenarios,
         {
-          name: 'Some name',
+          id,
+          name: 'A new scenario',
           sets: [],
         }
       ],
-      currentScenarioIndex: state.scenarios.length,
+      currentScenarioId: id,
     }));
   };
 
-  removeValueFromSet = (targetValueIndex, currentSetIndex) => {
+  removeValueFromSet = (targetValueIndex, currentSetId) => {
     this.setState(state => {
-      const updatedScenarios = state.scenarios.map((scenario, scenarioIndex) => {
-        if (scenarioIndex !== state.currentScenarioIndex) return scenario;
+      const updatedScenarios = state.scenarios.map((scenario) => {
+        if (scenario.id !== state.currentScenarioId) return scenario;
 
-        const updatedSets = scenario.sets.map((set, setIndex) => {
-          if (setIndex !== currentSetIndex) return set;
+        const updatedSets = scenario.sets.map(set => {
+          if (set.id !== currentSetId) return set;
+
           const newData = set.data.slice();
           newData.splice(targetValueIndex, 1);
 
@@ -167,37 +199,43 @@ class App extends Component {
     });
   };
 
-  removeSetFromScenario = (targetSetIndex) => {
-    // this.setState(state => {
-    //   const updatedScenarios = state.scenarios.map((scenario, scenarioIndex) => {
-    //     if (scenarioIndex !== state.currentScenarioIndex) return scenario;
-    //
-    //     const updatedSets = scenario.sets.map((set, setIndex) => {
-    //       if (setIndex !== targetSetIndex) return set;
-    //       const newData = set.data.slice();
-    //       newData.splice(targetValueIndex, 1);
-    //
-    //       return {
-    //         ...set,
-    //         data: newData,
-    //       }
-    //     });
-    //
-    //     return {
-    //       ...scenario,
-    //       sets: updatedSets,
-    //     }
-    //   });
-    //
-    //   return {
-    //     scenarios: updatedScenarios,
-    //   }
-    // });
+  removeSet = (setId) => {
+    this.setState(state => {
+      const updatedScenarios = state.scenarios.map((scenario) => {
+        if (scenario.id !== state.currentScenarioId) return scenario;
+
+        const updatedSets = scenario.sets.filter(set => set.id !== setId);
+
+        return {
+          ...scenario,
+          sets: updatedSets,
+        }
+      });
+
+      return {
+        scenarios: updatedScenarios,
+      }
+    });
+  };
+
+  removeScenario = (scenarioId) => {
+    if (this.state.scenarios.length === 1) {
+      window.alert(`I'm afraid I can't let you delete the last scenario, Dave.`);
+      if (document.activeElement) document.activeElement.blur();
+      return;
+    }
+    this.setState(state => {
+      const updatedScenarios = state.scenarios.filter(scenario => scenario.id !== scenarioId);
+
+      return {
+        scenarios: updatedScenarios,
+        currentScenarioId: state.scenarios[0].id,
+      }
+    });
   };
 
   render() {
     const { state } = this;
-    // const currentScenario = state.scenarios.find(scenario => scenario.id === state.currentScenarioId);
     const currentScenario = findById(state.scenarios, state.currentScenarioId);
 
     return (
@@ -213,7 +251,6 @@ class App extends Component {
               if (e.target.value === 'NEW SCENARIO') {
                 this.addScenario();
               } else {
-                console.log('  --  >  App.js:227 > e.target.value', e.target.value);
                 this.setState({
                   currentScenarioId: e.target.value,
                 });
@@ -241,7 +278,8 @@ class App extends Component {
             removeValueFromSet={this.removeValueFromSet}
             changeSetName={this.changeSetName}
             updateScenarioName={this.updateScenarioName}
-            removeSetFromScenario={this.removeSetFromScenario}
+            removeSet={this.removeSet}
+            removeScenario={this.removeScenario}
           />
 
           <Chart scenario={currentScenario} />

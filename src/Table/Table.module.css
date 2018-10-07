@@ -4,13 +4,29 @@
 }
 
 .header {
+  display: flex;
   padding: 10px;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .title {
   position: relative;
   padding: 10px;
   font-size: 20px;
+}
+
+.deleteButton {
+  border: none;
+  background: none;
+  font-size: 20px;
+  color: var(--color-grey--600);
+  cursor: pointer;
+  transition: 200ms;
+}
+
+.deleteButton:hover {
+  transform: rotate(90deg);
 }
 
 .sets {

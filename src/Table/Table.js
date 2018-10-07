@@ -16,6 +16,15 @@ const Table = props => (
         }}
         text={props.scenario.name}
       />
+
+      <button
+        className={styles.deleteButton}
+        onClick={() => {
+          props.removeScenario(props.scenario.id);
+        }}
+      >
+        ✕
+      </button>
     </div>
 
     <div className={styles.sets}>
@@ -23,11 +32,12 @@ const Table = props => (
         <TableRow
           key={set.id}
           set={set}
+          scenario={props.scenario}
           rowIndex={index}
           addValueToSet={props.addValueToSet}
           removeValueFromSet={props.removeValueFromSet}
           changeSetName={props.changeSetName}
-          removeSetFromScenario={props.removeSetFromScenario}
+          removeSet={props.removeSet}
         />
       ))}
     </div>

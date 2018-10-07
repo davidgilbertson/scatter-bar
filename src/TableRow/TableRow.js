@@ -80,9 +80,10 @@ class TableRow extends Component {
                 tabIndex="-1"
                 onClick={() => {
                   props.removeValueFromSet(valueIndex, props.set.id);
+                  this.inputEl.current.focus();
                 }}
               >
-                ×
+                ✕
               </button>
           </span>
           ))}
@@ -92,10 +93,10 @@ class TableRow extends Component {
           <button
             className={styles.deleteButton}
             onClick={() => {
-              props.removeSetFromScenario(props.set.id);
+              props.removeSet(props.set.id);
             }}
           >
-            ×
+            ✕
           </button>
         </div>
       </React.Fragment>
