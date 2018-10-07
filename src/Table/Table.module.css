@@ -1,0 +1,33 @@
+.panel {
+  margin-bottom: 40px;
+  background: white;
+}
+
+.header {
+  padding: 10px;
+}
+
+.title {
+  position: relative;
+  padding: 10px;
+  font-size: 20px;
+}
+
+.sets {
+  display: grid;
+  grid: auto / 1fr 120px 2fr 50px;
+}
+
+.sets > * {
+  border-top: 1px solid var(--color-grey--200);
+  min-height: 100%;
+  padding: 10px;
+}
+
+.addSetWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border-top: 1px solid var(--color-grey--200);
+}

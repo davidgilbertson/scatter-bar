@@ -1,0 +1,13 @@
+.button {
+  background: var(--color-blue--500);
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.button[disabled] {
+  background: var(--color-grey--200);
+  color: var(--color-grey--050);
+}

@@ -1,16 +1,13 @@
 .panel {
-  width: 90%;
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 30px;
-  background: white;
-  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  padding: 30px 35px 20px 30px;
 }
 
 .title {
   font-size: 45px;
   font-weight: 300;
-  margin-bottom: 40px;
+  margin-bottom: 50px;
+  text-align: center;
+  white-space: pre-line;
 }
 
 .body {
@@ -23,6 +20,7 @@
   text-align: right;
   padding: 0 10px;
   align-self: center;
+  white-space: pre-line;
 }
 
 .bar {
@@ -35,6 +33,7 @@
 
 .scale {
   grid-column: 2 / 3;
+  height: 20px;
   text-align: center;
   border-top: 2px solid var(--color-grey--100);
   font-size: 20px;
@@ -42,7 +41,6 @@
 
 .scaleLabelWrapper {
   position: relative;
-  height: 40px;
 }
 
 .scaleLabel {

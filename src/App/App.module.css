@@ -1,3 +1,33 @@
-.app {
-  text-align: center;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 30px;
+  background: var(--color-blue--900);
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 300;
+  color: white;
+}
+
+.select {
+  padding: 8px 16px;
+  background: var(--color-blue--100);
+  border: none;
+  border-radius: 4px;
+}
+
+.select option {
+  opacity: 0.5;
+  background: white;
+  padding: 5px;
+}
+
+.page {
+  padding: 40px;
+  width: calc(100% - 80px);
+  max-width: 1200px;
+  margin: 0 auto;
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './Chart.module.css';
 import scientificNotation from '../utils/scientificNotation';
 import toSignificantFigures from '../utils/toSignificantFigures';
+import Panel from '../Panel/Panel';
 
 const getMedian = (arr) => {
   const midPoint = arr.length / 2;
@@ -44,16 +45,20 @@ const getScaleValues = max => {
 };
 
 const Chart = (props) => {
-  const largestValue = Math.max(...props.sets.map(set => Math.max(...set.data)));
+  if (!props.scenario.sets.length) return null;
+
+  const largestValue = Math.max(...props.scenario.sets.map(set => Math.max(...set.data)));
+
+  if (largestValue <=0) return null;
 
   const {scaleValues, scaleMax} = getScaleValues(largestValue * 1.05);
 
   return (
-    <div className={styles.panel}>
-      <h1 className={styles.title}>{props.title}</h1>
+    <Panel className={styles.panel}>
+      <h1 className={styles.title}>{props.scenario.name}</h1>
 
       <div className={styles.body}>
-        {sortByMedian(props.sets).map((set, i) => (
+        {sortByMedian(props.scenario.sets).map((set, i) => (
           <React.Fragment key={i}>
             <div className={styles.setLabel}>
               {set.name}
@@ -89,14 +94,10 @@ const Chart = (props) => {
               </div>
             ))}
           </div>
-
-          <div>
-            {props.metric}
-          </div>
         </div>
       </div>
 
-    </div>
+    </Panel>
   );
 };
 
