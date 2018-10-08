@@ -24,13 +24,13 @@ class TableRow extends Component {
 
     return (
       <React.Fragment>
-        <div className={styles.setNameWrapper}>
+        <div className={styles.scenarioNameWrapper}>
           <EditableText
-            className={styles.setName}
+            className={styles.scenarioName}
             onChange={newSetName => {
-              props.changeSetName(newSetName, props.set.id);
+              props.changeSetName(newSetName, props.scenario.id);
             }}
-            text={props.set.name}
+            text={props.scenario.name}
           />
         </div>
 
@@ -44,7 +44,7 @@ class TableRow extends Component {
 
             if (isNaN(Number(newValue))) return;
 
-            props.addValueToSet(Number(state.newValue), props.set.id);
+            props.addValueToSet(Number(state.newValue), props.scenario.id);
 
             this.updateValue('');
 
@@ -63,23 +63,20 @@ class TableRow extends Component {
             }}
           />
 
-          <Button
-            disabled={!isNewValueValid}
-            className={styles.addSetButton}
-          >
+          <Button disabled={!isNewValueValid}>
             Add
           </Button>
         </form>
 
         <div className={styles.values}>
-          {props.set.data.map((value, valueIndex) => (
+          {props.scenario.data.map((value, valueIndex) => (
             <span className={styles.value} key={valueIndex}>
               {value.toLocaleString()}
               <button
                 className={styles.deleteValueButton}
                 tabIndex="-1"
                 onClick={() => {
-                  props.removeValueFromSet(valueIndex, props.set.id);
+                  props.removeValueFromSet(valueIndex, props.scenario.id);
                   this.inputEl.current.focus();
                 }}
               >
@@ -93,7 +90,7 @@ class TableRow extends Component {
           <button
             className={styles.deleteButton}
             onClick={() => {
-              props.removeSet(props.set.id);
+              props.removeSet(props.scenario.id);
             }}
           >
             ✕

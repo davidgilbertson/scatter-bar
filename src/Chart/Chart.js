@@ -12,8 +12,8 @@ const getMedian = (arr) => {
     : (arr[midPoint - 1] + arr[midPoint]) / 2;
 };
 
-const sortByMedian = (sets) => sets.slice().sort((setA, setB) => (
-  getMedian(setA.data) - getMedian(setB.data)
+const sortByMedian = scenarios => scenarios.slice().sort((scenarioA, scenarioB) => (
+  getMedian(scenarioA.data) - getMedian(scenarioB.data)
 ));
 
 const getScaleValues = max => {
@@ -45,9 +45,9 @@ const getScaleValues = max => {
 };
 
 const Chart = (props) => {
-  if (!props.story.sets.length) return null;
+  if (!props.story.scenarios.length) return null;
 
-  const largestValue = Math.max(...props.story.sets.map(set => Math.max(...set.data)));
+  const largestValue = Math.max(...props.story.scenarios.map(scenario => Math.max(...scenario.data)));
 
   if (largestValue <=0) return null;
 
@@ -58,14 +58,14 @@ const Chart = (props) => {
       <h1 className={styles.title}>{props.story.name}</h1>
 
       <div className={styles.body}>
-        {sortByMedian(props.story.sets).map((set, i) => (
+        {sortByMedian(props.story.scenarios).map((scenario, i) => (
           <React.Fragment key={i}>
-            <div className={styles.setLabel}>
-              {set.name}
+            <div className={styles.scenarioLabel}>
+              {scenario.name}
             </div>
 
             <div className={styles.bar}>
-              {set.data.map((value, i) => (
+              {scenario.data.map((value, i) => (
                 <div
                   key={i}
                   className={styles.mark}

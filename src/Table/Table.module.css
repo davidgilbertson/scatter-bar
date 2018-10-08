@@ -29,12 +29,12 @@
   transform: rotate(90deg);
 }
 
-.sets {
+.scenarios {
   display: grid;
   grid: auto / 1fr 120px 2fr 50px;
 }
 
-.sets > * {
+.scenarios > * {
   border-top: 1px solid var(--color-grey--200);
   min-height: 100%;
   padding: 10px;

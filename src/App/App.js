@@ -40,12 +40,12 @@ class App extends Component {
       const story = {
         id: mockStoryId,
         name: mockData.name,
-        sets: [],
+        scenarios: [],
       };
 
-      story.sets = mockData.sets.map(set => ({
+      story.scenarios = mockData.scenarios.map(scenario => ({
         id: uuid(),
-        ...set,
+        ...scenario,
       }));
 
       this.state = {
@@ -83,11 +83,11 @@ class App extends Component {
 
         return {
           ...story,
-          sets: [
-            ...story.sets,
+          scenarios: [
+            ...story.scenarios,
             {
               id: uuid(),
-              name: 'A new set',
+              name: 'A new scenario',
               data: [],
             }
           ],
@@ -105,18 +105,18 @@ class App extends Component {
       const updatedStories = state.stories.map((story) => {
         if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = story.sets.map(set => {
-          if (set.id !== currentSetId) return set;
+        const updatedSets = story.scenarios.map(scenario => {
+          if (scenario.id !== currentSetId) return scenario;
 
           return {
-            ...set,
+            ...scenario,
             name: newName,
           }
         });
 
         return {
           ...story,
-          sets: updatedSets,
+          scenarios: updatedSets,
         }
       });
 
@@ -131,13 +131,13 @@ class App extends Component {
       const updatedStories = state.stories.map((story) => {
         if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = story.sets.map(set => {
-          if (set.id !== targetSetId) return set;
+        const updatedSets = story.scenarios.map(scenario => {
+          if (scenario.id !== targetSetId) return scenario;
 
           return {
-            ...set,
+            ...scenario,
             data: [
-              ...set.data,
+              ...scenario.data,
               newValue,
             ]
           }
@@ -145,7 +145,7 @@ class App extends Component {
 
         return {
           ...story,
-          sets: updatedSets,
+          scenarios: updatedSets,
         }
       });
 
@@ -163,7 +163,7 @@ class App extends Component {
         {
           id,
           name: 'A new story',
-          sets: [],
+          scenarios: [],
         }
       ],
       currentStoryId: id,
@@ -175,21 +175,21 @@ class App extends Component {
       const updatedStories = state.stories.map((story) => {
         if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = story.sets.map(set => {
-          if (set.id !== currentSetId) return set;
+        const updatedSets = story.scenarios.map(scenario => {
+          if (scenario.id !== currentSetId) return scenario;
 
-          const newData = set.data.slice();
+          const newData = scenario.data.slice();
           newData.splice(targetValueIndex, 1);
 
           return {
-            ...set,
+            ...scenario,
             data: newData,
           }
         });
 
         return {
           ...story,
-          sets: updatedSets,
+          scenarios: updatedSets,
         }
       });
 
@@ -199,16 +199,16 @@ class App extends Component {
     });
   };
 
-  removeSet = (setId) => {
+  removeSet = (scenarioId) => {
     this.setState(state => {
       const updatedStories = state.stories.map((story) => {
         if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = story.sets.filter(set => set.id !== setId);
+        const updatedSets = story.scenarios.filter(scenario => scenario.id !== scenarioId);
 
         return {
           ...story,
-          sets: updatedSets,
+          scenarios: updatedSets,
         }
       });
 

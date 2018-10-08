@@ -1,10 +1,10 @@
-.setNameWrapper {
+.scenarioNameWrapper {
   position: relative; /* for the edit button */
   display: flex;
   align-items: center;
 }
 
-.setName {
+.scenarioName {
   flex: auto; /* fill the width for bigger click target */
 }
 

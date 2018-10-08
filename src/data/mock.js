@@ -1,6 +1,6 @@
 export default {
   name: 'An example: a comparison of network types',
-  sets: [
+  scenarios: [
     {
       name: '3G, no cache',
       data: [120, 315, 500, 541, 512, 511],

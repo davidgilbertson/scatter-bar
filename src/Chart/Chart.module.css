@@ -15,7 +15,7 @@
   grid: auto / auto 1fr;
 }
 
-.setLabel {
+.scenarioLabel {
   grid-column: 1 / 2;
   text-align: right;
   padding: 0 10px;
