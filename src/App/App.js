@@ -7,7 +7,7 @@ import Table from '../Table/Table';
 
 const findById = (arr, id) => arr.find(item => item.id === id);
 
-const LS_KEY = 'scenario-data';
+const LS_KEY = 'app-data';
 
 const addToLocalStorage = (key, data) => {
   try {
@@ -36,21 +36,21 @@ class App extends Component {
     if (storedState) {
       this.state = storedState;
     } else {
-      const mockScenarioId = uuid();
-      const scenario = {
-        id: mockScenarioId,
+      const mockStoryId = uuid();
+      const story = {
+        id: mockStoryId,
         name: mockData.name,
         sets: [],
       };
 
-      scenario.sets = mockData.sets.map(set => ({
+      story.sets = mockData.sets.map(set => ({
         id: uuid(),
         ...set,
       }));
 
       this.state = {
-        scenarios: [scenario],
-        currentScenarioId: mockScenarioId,
+        stories: [story],
+        currentStoryId: mockStoryId,
       };
     }
   }
@@ -59,32 +59,32 @@ class App extends Component {
     addToLocalStorage(LS_KEY, this.state);
   }
 
-  updateScenarioName = (newScenarioName) => {
+  updateStoryName = (newStoryName) => {
     this.setState(state => {
-      const updatedScenarios = state.scenarios.map((scenario) => {
-        if (scenario.id !== state.currentScenarioId) return scenario;
+      const updatedStories = state.stories.map((story) => {
+        if (story.id !== state.currentStoryId) return story;
 
         return {
-          ...scenario,
-          name: newScenarioName,
+          ...story,
+          name: newStoryName,
         }
       });
 
       return {
-        scenarios: updatedScenarios,
+        stories: updatedStories,
       }
     });
   };
 
   addSet = () => {
     this.setState(state => {
-      const updatedScenarios = state.scenarios.map((scenario) => {
-        if (scenario.id !== state.currentScenarioId) return scenario;
+      const updatedStories = state.stories.map((story) => {
+        if (story.id !== state.currentStoryId) return story;
 
         return {
-          ...scenario,
+          ...story,
           sets: [
-            ...scenario.sets,
+            ...story.sets,
             {
               id: uuid(),
               name: 'A new set',
@@ -95,17 +95,17 @@ class App extends Component {
       });
 
       return {
-        scenarios: updatedScenarios,
+        stories: updatedStories,
       }
     });
   };
 
   changeSetName = (newName, currentSetId) => {
     this.setState(state => {
-      const updatedScenarios = state.scenarios.map((scenario) => {
-        if (scenario.id !== state.currentScenarioId) return scenario;
+      const updatedStories = state.stories.map((story) => {
+        if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = scenario.sets.map(set => {
+        const updatedSets = story.sets.map(set => {
           if (set.id !== currentSetId) return set;
 
           return {
@@ -115,23 +115,23 @@ class App extends Component {
         });
 
         return {
-          ...scenario,
+          ...story,
           sets: updatedSets,
         }
       });
 
       return {
-        scenarios: updatedScenarios,
+        stories: updatedStories,
       }
     });
   };
 
   addValueToSet = (newValue, targetSetId) => {
     this.setState(state => {
-      const updatedScenarios = state.scenarios.map((scenario) => {
-        if (scenario.id !== state.currentScenarioId) return scenario;
+      const updatedStories = state.stories.map((story) => {
+        if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = scenario.sets.map(set => {
+        const updatedSets = story.sets.map(set => {
           if (set.id !== targetSetId) return set;
 
           return {
@@ -144,38 +144,38 @@ class App extends Component {
         });
 
         return {
-          ...scenario,
+          ...story,
           sets: updatedSets,
         }
       });
 
       return {
-        scenarios: updatedScenarios,
+        stories: updatedStories,
       }
     });
   };
 
-  addScenario = () => {
+  addStory = () => {
     const id = uuid();
     this.setState(state => ({
-      scenarios: [
-        ...state.scenarios,
+      stories: [
+        ...state.stories,
         {
           id,
-          name: 'A new scenario',
+          name: 'A new story',
           sets: [],
         }
       ],
-      currentScenarioId: id,
+      currentStoryId: id,
     }));
   };
 
   removeValueFromSet = (targetValueIndex, currentSetId) => {
     this.setState(state => {
-      const updatedScenarios = state.scenarios.map((scenario) => {
-        if (scenario.id !== state.currentScenarioId) return scenario;
+      const updatedStories = state.stories.map((story) => {
+        if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = scenario.sets.map(set => {
+        const updatedSets = story.sets.map(set => {
           if (set.id !== currentSetId) return set;
 
           const newData = set.data.slice();
@@ -188,55 +188,55 @@ class App extends Component {
         });
 
         return {
-          ...scenario,
+          ...story,
           sets: updatedSets,
         }
       });
 
       return {
-        scenarios: updatedScenarios,
+        stories: updatedStories,
       }
     });
   };
 
   removeSet = (setId) => {
     this.setState(state => {
-      const updatedScenarios = state.scenarios.map((scenario) => {
-        if (scenario.id !== state.currentScenarioId) return scenario;
+      const updatedStories = state.stories.map((story) => {
+        if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = scenario.sets.filter(set => set.id !== setId);
+        const updatedSets = story.sets.filter(set => set.id !== setId);
 
         return {
-          ...scenario,
+          ...story,
           sets: updatedSets,
         }
       });
 
       return {
-        scenarios: updatedScenarios,
+        stories: updatedStories,
       }
     });
   };
 
-  removeScenario = (scenarioId) => {
-    if (this.state.scenarios.length === 1) {
-      window.alert(`I'm afraid I can't let you delete the last scenario, Dave.`);
+  removeStory = (storyId) => {
+    if (this.state.stories.length === 1) {
+      window.alert(`I'm afraid I can't let you delete the last story, Dave.`);
       if (document.activeElement) document.activeElement.blur();
       return;
     }
     this.setState(state => {
-      const updatedScenarios = state.scenarios.filter(scenario => scenario.id !== scenarioId);
+      const updatedStories = state.stories.filter(story => story.id !== storyId);
 
       return {
-        scenarios: updatedScenarios,
-        currentScenarioId: state.scenarios[0].id,
+        stories: updatedStories,
+        currentStoryId: state.stories[0].id,
       }
     });
   };
 
   render() {
     const { state } = this;
-    const currentScenario = findById(state.scenarios, state.currentScenarioId);
+    const currentStory = findById(state.stories, state.currentStoryId);
 
     return (
       <React.Fragment>
@@ -248,42 +248,42 @@ class App extends Component {
           <select
             className={styles.select}
             onChange={e => {
-              if (e.target.value === 'NEW SCENARIO') {
-                this.addScenario();
+              if (e.target.value === 'NEW STORY') {
+                this.addStory();
               } else {
                 this.setState({
-                  currentScenarioId: e.target.value,
+                  currentStoryId: e.target.value,
                 });
               }
 
             }}
-            value={state.currentScenarioId}
+            value={state.currentStoryId}
           >
-            {state.scenarios.map(scenario => (
-              <option key={scenario.id} value={scenario.id}>
-                {scenario.name}
+            {state.stories.map(story => (
+              <option key={story.id} value={story.id}>
+                {story.name}
               </option>
             ))}
 
             <option disabled>-----------</option>
 
-            <option value="NEW SCENARIO">Add a new scenario</option>
+            <option value="NEW STORY">Add a new story</option>
           </select>
         </header>
 
         <div className={styles.page}>
           <Table
-            scenario={currentScenario}
+            story={currentStory}
             addSet={this.addSet}
             addValueToSet={this.addValueToSet}
             removeValueFromSet={this.removeValueFromSet}
             changeSetName={this.changeSetName}
-            updateScenarioName={this.updateScenarioName}
+            updateStoryName={this.updateStoryName}
             removeSet={this.removeSet}
-            removeScenario={this.removeScenario}
+            removeStory={this.removeStory}
           />
 
-          <Chart scenario={currentScenario} />
+          <Chart story={currentStory} />
         </div>
       </React.Fragment>
     );

@@ -45,9 +45,9 @@ const getScaleValues = max => {
 };
 
 const Chart = (props) => {
-  if (!props.scenario.sets.length) return null;
+  if (!props.story.sets.length) return null;
 
-  const largestValue = Math.max(...props.scenario.sets.map(set => Math.max(...set.data)));
+  const largestValue = Math.max(...props.story.sets.map(set => Math.max(...set.data)));
 
   if (largestValue <=0) return null;
 
@@ -55,10 +55,10 @@ const Chart = (props) => {
 
   return (
     <Panel className={styles.panel}>
-      <h1 className={styles.title}>{props.scenario.name}</h1>
+      <h1 className={styles.title}>{props.story.name}</h1>
 
       <div className={styles.body}>
-        {sortByMedian(props.scenario.sets).map((set, i) => (
+        {sortByMedian(props.story.sets).map((set, i) => (
           <React.Fragment key={i}>
             <div className={styles.setLabel}>
               {set.name}

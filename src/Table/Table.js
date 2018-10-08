@@ -12,15 +12,15 @@ const Table = props => (
         className={styles.title}
         rows={2}
         onChange={newName => {
-          props.updateScenarioName(newName);
+          props.updateStoryName(newName);
         }}
-        text={props.scenario.name}
+        text={props.story.name}
       />
 
       <button
         className={styles.deleteButton}
         onClick={() => {
-          props.removeScenario(props.scenario.id);
+          props.removeStory(props.story.id);
         }}
       >
         ✕
@@ -28,11 +28,11 @@ const Table = props => (
     </div>
 
     <div className={styles.sets}>
-      {props.scenario.sets.map((set, index) => (
+      {props.story.sets.map((set, index) => (
         <TableRow
           key={set.id}
           set={set}
-          scenario={props.scenario}
+          story={props.story}
           rowIndex={index}
           addValueToSet={props.addValueToSet}
           removeValueFromSet={props.removeValueFromSet}
