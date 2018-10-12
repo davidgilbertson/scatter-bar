@@ -4,17 +4,17 @@ import scientificNotation from '../utils/scientificNotation';
 import toSignificantFigures from '../utils/toSignificantFigures';
 import Panel from '../Panel/Panel';
 
-const getMedian = (arr) => {
-  const midPoint = arr.length / 2;
+// const getMedian = (arr) => {
+//   const midPoint = arr.length / 2;
+//
+//   return midPoint % 1
+//     ? arr[midPoint - 0.5]
+//     : (arr[midPoint - 1] + arr[midPoint]) / 2;
+// };
 
-  return midPoint % 1
-    ? arr[midPoint - 0.5]
-    : (arr[midPoint - 1] + arr[midPoint]) / 2;
-};
-
-const sortByMedian = scenarios => scenarios.slice().sort((scenarioA, scenarioB) => (
-  getMedian(scenarioA.data) - getMedian(scenarioB.data)
-));
+// const sortByMedian = scenarios => scenarios.slice().sort((scenarioA, scenarioB) => (
+//   getMedian(scenarioA.data) - getMedian(scenarioB.data)
+// ));
 
 const getScaleValues = max => {
   const [coefficient, exponent] = scientificNotation(max);
@@ -58,7 +58,7 @@ const Chart = (props) => {
       <h1 className={styles.title}>{props.story.name}</h1>
 
       <div className={styles.body}>
-        {sortByMedian(props.story.scenarios).map((scenario, i) => (
+        {props.story.scenarios.map((scenario, i) => (
           <React.Fragment key={i}>
             <div className={styles.scenarioLabel}>
               {scenario.name}
