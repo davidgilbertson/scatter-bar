@@ -58,6 +58,26 @@ class TableRow extends Component {
             type="number"
             autoFocus={props.rowIndex === 0}
             value={state.newValue}
+            onPaste={e => {
+              const rawData = e.clipboardData.getData('text');
+
+              try {
+                e.preventDefault();
+
+                rawData.split(/[\n\r\t,]/).forEach(maybeNumber => {
+                  if (maybeNumber === '') return;
+
+                  if (isNaN(Number(maybeNumber))) return;
+
+                  props.addValueToSet(Number(maybeNumber), props.scenario.id);
+                }).filter(Boolean);
+
+                this.inputEl.current.focus();
+              } catch(err) {
+                console.error('Could not handle clipboard data');
+                this.updateValue(rawData);
+              }
+            }}
             onChange={e => {
               this.updateValue(e.target.value);
             }}
