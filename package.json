@@ -8,13 +8,14 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-scripts": "2.0.4",
+    "react-testing-library": "^5.2.0",
     "uuid": "^3.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build-deploy": "npm run build && firebase deploy",
-    "test": "react-scripts test --env=jsdom",
+    "test": "node ./tests/parseScenarios.js",
     "eject": "react-scripts eject"
   },
   "browserslist": [
