@@ -6,7 +6,7 @@ import EditableText from '../EditableText/EditableText';
 import Panel from '../Panel/Panel';
 
 const Table = props => (
-  <Panel className={styles.panel}>
+  <Panel className={styles.panel} data-testid="Table">
     <div className={styles.header}>
       <EditableText
         className={styles.title}

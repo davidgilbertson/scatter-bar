@@ -6,17 +6,11 @@ class EditableText extends Component {
     super(props);
 
     this.state = {
-      // text: props.children,
       editMode: false,
     };
 
     this.textAreaRef = React.createRef();
   }
-
-  // updateValue = (e) => {
-  //   console.log('  --  >  EditableText.js:17 > e.target.value', e.target.value);
-  //   this.setState({ text: e.target.value });
-  // };
 
   enterEditMode = () => {
     if (this.editMode) return;
@@ -44,8 +38,6 @@ class EditableText extends Component {
   };
 
   leaveEditMode = () => {
-    // this.props.onUpdate(this.state.text);
-
     window.removeEventListener('click', this.handleWindowClick);
     document.removeEventListener('keydown', this.handleKeyPress);
 
@@ -68,6 +60,7 @@ class EditableText extends Component {
     return state.editMode
     ? (
       <textarea
+        data-testid="EditableText__test-area"
         rows={props.rows || 3}
         className={styles.textArea}
         ref={this.textAreaRef}

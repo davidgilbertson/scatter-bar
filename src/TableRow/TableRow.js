@@ -35,6 +35,7 @@ class TableRow extends Component {
         </div>
 
         <form
+          data-testid="TableRow__form"
           className={styles.inputs}
           onSubmit={e => {
             e.preventDefault();
@@ -88,13 +89,14 @@ class TableRow extends Component {
           </Button>
         </form>
 
-        <div className={styles.values}>
+        <div className={styles.values} data-testid="TableRow__values">
           {props.scenario.data.map((value, valueIndex) => (
             <span className={styles.value} key={valueIndex}>
               {value.toLocaleString()}
               <button
                 className={styles.deleteValueButton}
                 tabIndex="-1"
+                title="Remove value from set"
                 onClick={() => {
                   props.removeValueFromSet(valueIndex, props.scenario.id);
                   this.inputEl.current.focus();
@@ -109,6 +111,7 @@ class TableRow extends Component {
         <div className={styles.deleteWrapper}>
           <button
             className={styles.deleteButton}
+            title="Remove set"
             onClick={() => {
               props.removeSet(props.scenario.id);
             }}

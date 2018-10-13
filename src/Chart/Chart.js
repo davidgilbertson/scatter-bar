@@ -54,7 +54,7 @@ const Chart = (props) => {
   const {scaleValues, scaleMax} = getScaleValues(largestValue * 1.05);
 
   return (
-    <Panel className={styles.panel}>
+    <Panel className={styles.panel} data-testid="Chart">
       <h1 className={styles.title}>{props.story.name}</h1>
 
       <div className={styles.body}>
