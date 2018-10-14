@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
-import mockData from '../data/mock';
 import styles from './App.module.css';
 import Chart from '../Chart/Chart';
 import Table from '../Table/Table';
+import mockData from '../data/mock';
 
 const findById = (arr, id) => arr.find(item => item.id === id);
 
@@ -27,32 +27,11 @@ const getFromLocalStorage = (key) => {
   }
 };
 
-
 class App extends Component {
   constructor(props) {
     super(props);
 
-    const storedState = getFromLocalStorage(LS_KEY);
-    if (storedState) {
-      this.state = storedState;
-    } else {
-      const mockStoryId = uuid();
-      const story = {
-        id: mockStoryId,
-        name: mockData.name,
-        scenarios: [],
-      };
-
-      story.scenarios = mockData.scenarios.map(scenario => ({
-        id: uuid(),
-        ...scenario,
-      }));
-
-      this.state = {
-        stories: [story],
-        currentStoryId: mockStoryId,
-      };
-    }
+    this.state = getFromLocalStorage(LS_KEY) || mockData;
   }
 
   componentDidUpdate() {
@@ -83,11 +62,11 @@ class App extends Component {
 
         return {
           ...story,
-          scenarios: [
-            ...story.scenarios,
+          sets: [
+            ...story.sets,
             {
               id: uuid(),
-              name: 'A new scenario',
+              name: 'A new set',
               data: [],
             }
           ],
@@ -105,18 +84,18 @@ class App extends Component {
       const updatedStories = state.stories.map((story) => {
         if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = story.scenarios.map(scenario => {
-          if (scenario.id !== currentSetId) return scenario;
+        const updatedSets = story.sets.map(set => {
+          if (set.id !== currentSetId) return set;
 
           return {
-            ...scenario,
+            ...set,
             name: newName,
           }
         });
 
         return {
           ...story,
-          scenarios: updatedSets,
+          sets: updatedSets,
         }
       });
 
@@ -131,13 +110,13 @@ class App extends Component {
       const updatedStories = state.stories.map((story) => {
         if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = story.scenarios.map(scenario => {
-          if (scenario.id !== targetSetId) return scenario;
+        const updatedSets = story.sets.map(set => {
+          if (set.id !== targetSetId) return set;
 
           return {
-            ...scenario,
+            ...set,
             data: [
-              ...scenario.data,
+              ...set.data,
               newValue,
             ]
           }
@@ -145,7 +124,7 @@ class App extends Component {
 
         return {
           ...story,
-          scenarios: updatedSets,
+          sets: updatedSets,
         }
       });
 
@@ -163,7 +142,7 @@ class App extends Component {
         {
           id,
           name: 'A new story',
-          scenarios: [],
+          sets: [],
         }
       ],
       currentStoryId: id,
@@ -175,21 +154,21 @@ class App extends Component {
       const updatedStories = state.stories.map((story) => {
         if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = story.scenarios.map(scenario => {
-          if (scenario.id !== currentSetId) return scenario;
+        const updatedSets = story.sets.map(set => {
+          if (set.id !== currentSetId) return set;
 
-          const newData = scenario.data.slice();
+          const newData = set.data.slice();
           newData.splice(targetValueIndex, 1);
 
           return {
-            ...scenario,
+            ...set,
             data: newData,
           }
         });
 
         return {
           ...story,
-          scenarios: updatedSets,
+          sets: updatedSets,
         }
       });
 
@@ -199,16 +178,16 @@ class App extends Component {
     });
   };
 
-  removeSet = (scenarioId) => {
+  removeSet = (setId) => {
     this.setState(state => {
       const updatedStories = state.stories.map((story) => {
         if (story.id !== state.currentStoryId) return story;
 
-        const updatedSets = story.scenarios.filter(scenario => scenario.id !== scenarioId);
+        const updatedSets = story.sets.filter(set => set.id !== setId);
 
         return {
           ...story,
-          scenarios: updatedSets,
+          sets: updatedSets,
         }
       });
 

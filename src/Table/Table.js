@@ -27,11 +27,11 @@ const Table = props => (
       </button>
     </div>
 
-    <div className={styles.scenarios}>
-      {props.story.scenarios.map((scenario, index) => (
+    <div className={styles.sets}>
+      {props.story.sets.map((set, index) => (
         <TableRow
-          key={scenario.id}
-          scenario={scenario}
+          key={set.id}
+          set={set}
           story={props.story}
           rowIndex={index}
           addValueToSet={props.addValueToSet}
@@ -44,7 +44,7 @@ const Table = props => (
 
     <div className={styles.addSetWrapper}>
       <Button onClick={props.addSet}>
-        Add a new scenario
+        Add a new set
       </Button>
     </div>
   </Panel>

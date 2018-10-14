@@ -22,11 +22,14 @@ const glob = promisify(require('glob'));
   const testScenarioFilePath = path.resolve(__dirname, './TEST_SCENARIOS.md');
 
   const gatherTestNames = async () => {
-    const fileNames = await glob('**/src/interactionTests/**/?(*.)+(spec|test).js');
+    // Changing working directory saves heaps of time
+    const cwd = path.resolve(__dirname, './src/interactionTests');
+    const fileNames = await glob('**/?(*.)+(spec|test).js', { cwd });
+
     const testNames = [];
 
     fileNames.forEach(fileName => {
-      const file = fs.readFileSync(fileName, 'utf8');
+      const file = fs.readFileSync(path.resolve(cwd, fileName), 'utf8');
 
       file.split('\n').forEach(line => {
         const match = line.trim().match(/^(test|it)\(['"`](.*)['"`],/);
@@ -69,33 +72,30 @@ const glob = promisify(require('glob'));
       headers[headerDepth - 1] = headerMatches[2];
     }
 
-    if (!line.match(/^\|(given|when)/i)) {
+    const scenarioMatch = line.match(/^\|(\w.*)\|.*\|/);
+
+    if (!scenarioMatch) {
       appendToOutput(line);
       continue;
     }
 
-    if (line.split('|').length === 4) {
-      const scenario = line.split('|')[1];
-      const expectedTestName = `${headers.join(' > ')} > ${scenario}`;
+    const scenario = scenarioMatch[1];
+    const expectedTestName = `${headers.join(' > ')} > ${scenario}`;
 
-      if (expectedTestName in testNamesWithCovered) {
-        testNamesWithCovered[expectedTestName] = true;
-        appendToOutput(`|${scenario}|${PASS}|`);
-        coveredTestCount += 1;
-      } else {
-        appendToOutput(`|${scenario}|${FAIL}|`);
-        uncoveredTestCount += 1;
-      }
+    if (expectedTestName in testNamesWithCovered) {
+      testNamesWithCovered[expectedTestName] = true;
+      appendToOutput(`|${scenario}|${PASS}|`);
+      coveredTestCount += 1;
     } else {
-      appendToOutput(line);
-      // The user probably wanted this to be a test scenario, but they did it wrong
-      console.error('Poorly formatted line:', line);
+      console.warn(' --> Not covered:', expectedTestName);
+      appendToOutput(`|${scenario}|${FAIL}|`);
+      uncoveredTestCount += 1;
     }
   }
 
   Object.entries(testNamesWithCovered).forEach(([key, value]) => {
     if (value === false) {
-      console.warn('No such scenario:', key);
+      console.warn(' --> No such scenario:', key);
     }
   });
 
@@ -105,6 +105,8 @@ const glob = promisify(require('glob'));
 
   outputText = outputText.replace(/(\*\*Coverage\*\*: ).*(\n)/, `$1${coverageString}$2`);
   fs.writeFileSync(testScenarioFilePath, outputText);
+
+  console.log(`Coverage: ${coverageString}`);
 
   console.timeEnd('Calculate scenario coverage');
 })();

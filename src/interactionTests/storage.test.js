@@ -58,7 +58,7 @@ test('Storage > When a value is added, it should be remembered after the page is
 
   // Check it's going into localStorage
   const storedData = JSON.parse(localStorage.getItem('app-data'));
-  const newSet = storedData.stories[0].scenarios[0];
+  const newSet = storedData.stories[0].sets[0];
 
   expect(newSet.data).toContain(9999);
 

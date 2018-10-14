@@ -24,13 +24,13 @@ class TableRow extends Component {
 
     return (
       <React.Fragment>
-        <div className={styles.scenarioNameWrapper}>
+        <div className={styles.setNameWrapper}>
           <EditableText
-            className={styles.scenarioName}
+            className={styles.setName}
             onChange={newSetName => {
-              props.changeSetName(newSetName, props.scenario.id);
+              props.changeSetName(newSetName, props.set.id);
             }}
-            text={props.scenario.name}
+            text={props.set.name}
           />
         </div>
 
@@ -45,7 +45,7 @@ class TableRow extends Component {
 
             if (isNaN(Number(newValue))) return;
 
-            props.addValueToSet(Number(state.newValue), props.scenario.id);
+            props.addValueToSet(Number(state.newValue), props.set.id);
 
             this.updateValue('');
 
@@ -70,7 +70,7 @@ class TableRow extends Component {
 
                   if (isNaN(Number(maybeNumber))) return;
 
-                  props.addValueToSet(Number(maybeNumber), props.scenario.id);
+                  props.addValueToSet(Number(maybeNumber), props.set.id);
                 }).filter(Boolean);
 
                 this.inputEl.current.focus();
@@ -90,7 +90,7 @@ class TableRow extends Component {
         </form>
 
         <div className={styles.values} data-testid="TableRow__values">
-          {props.scenario.data.map((value, valueIndex) => (
+          {props.set.data.map((value, valueIndex) => (
             <span className={styles.value} key={valueIndex}>
               {value.toLocaleString()}
               <button
@@ -98,7 +98,7 @@ class TableRow extends Component {
                 tabIndex="-1"
                 title="Remove value from set"
                 onClick={() => {
-                  props.removeValueFromSet(valueIndex, props.scenario.id);
+                  props.removeValueFromSet(valueIndex, props.set.id);
                   this.inputEl.current.focus();
                 }}
               >
@@ -113,7 +113,7 @@ class TableRow extends Component {
             className={styles.deleteButton}
             title="Remove set"
             onClick={() => {
-              props.removeSet(props.scenario.id);
+              props.removeSet(props.set.id);
             }}
           >
             ✕

@@ -17,7 +17,7 @@ describe('Display', () => {
     container,
   } = render(<App />);
 
-  it('Display > Given a story with sets, then a data panel and chart should be rendered', () => {
+  it('Stories > Given a story with some sets, then a data panel and chart should be rendered', () => {
     const title = getByText('An example: 9% random variation');
 
     expect(title).not.toBe(null);
@@ -28,14 +28,14 @@ describe('Display', () => {
     expect(queryByTestId('cats')).not.toBeInTheDocument();
   });
 
-  test('Display > Sets > Given "Add a new scenario" is clicked, a new scenario is added', () => {
-    const addScenarioButton = getByText('Add a new scenario');
+  test('Sets > When "Add a new set" is clicked, a new set is added', () => {
+    const addScenarioButton = getByText('Add a new set');
     fireEvent.click(addScenarioButton);
-    expect(getByText('A new scenario')).toBeInTheDocument();
+    expect(getByText('A new set')).toBeInTheDocument();
   });
 
-  test('Display > Sets > Given a set name is clicked, a new scenario name can be typed', async () => {
-    const newSet = getByText('A new scenario');
+  test('Sets > When a set name is clicked, a new set name can be typed', async () => {
+    const newSet = getByText('A new set');
 
     expect(queryByTestId('EditableText__test-area')).not.toBeInTheDocument();
 
@@ -45,7 +45,7 @@ describe('Display', () => {
 
     expect(queryByTestId('EditableText__test-area')).toBeInTheDocument();
 
-    const newSetTextarea = getByText('A new scenario');
+    const newSetTextarea = getByText('A new set');
 
     fireEvent.change(newSetTextarea, {
       target: {
