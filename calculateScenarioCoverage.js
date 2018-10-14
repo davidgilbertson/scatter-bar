@@ -1,3 +1,12 @@
+/**
+ *
+ * This file gathers test scenario coverage.
+ * - It collects a list of test names by parsing test files
+ * - It collects a list of scenarios by parsing TEST_SCENARIOS.md
+ * - It compares the two, then updates TEST_SCENARIOS.md to show what's covered and what's not
+ *
+ **/
+
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');

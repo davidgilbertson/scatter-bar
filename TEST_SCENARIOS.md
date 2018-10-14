@@ -17,7 +17,7 @@ For notes about the use of this page, see [TEST_SCENARIOS_INFO.md](./TEST_SCENAR
 ## Chart
 |Test scenario|Covered|
 |---          |   :---:  |
-|when the user's logged out..., then two sets should be rendered|:x:|
+|When the user's logged out..., then two sets should be rendered|:x:|
 
 # Adding data
 
