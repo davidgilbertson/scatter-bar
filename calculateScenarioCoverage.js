@@ -1,44 +1,48 @@
-const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
 const glob = promisify(require('glob'));
 
-const PASS = ':heavy_check_mark:';
-const FAIL = ':x:';
-
-const gatherTestNames = async () => {
-  const fileNames = await glob('**/src/integrationTests/**/?(*.)+(spec|test).js');
-  const testNames = [];
-
-  fileNames.forEach(fileName => {
-    const file = fs.readFileSync(fileName, 'utf8');
-
-    file.split('\n').forEach(line => {
-      const match = line.trim().match(/^(test|it)\(['"`](.*)['"`],/);
-
-      if (match) {
-        testNames.push(match[2]);
-      }
-    });
-  });
-
-  return testNames;
-};
-
-let outputText = '';
-
-const outputLine = text => {
-  outputText += `${text}${os.EOL}`;
-};
-
 (async () => {
   console.time('Calculate scenario coverage');
-  const scenariosMarkdown = fs.readFileSync(path.resolve(__dirname, './TEST_SCENARIOS.md'), 'utf8');
 
-  const mockTests = await gatherTestNames();
+  const PASS = ':heavy_check_mark:';
+  const FAIL = ':x:';
+  let coveredTestCount = 0;
+  let uncoveredTestCount = 0;
+  const testScenarioFilePath = path.resolve(__dirname, './TEST_SCENARIOS.md');
 
-  const testNamesWithCovered = mockTests.reduce((acc, current) => {
+  const gatherTestNames = async () => {
+    const fileNames = await glob('**/src/interactionTests/**/?(*.)+(spec|test).js');
+    const testNames = [];
+
+    fileNames.forEach(fileName => {
+      const file = fs.readFileSync(fileName, 'utf8');
+
+      file.split('\n').forEach(line => {
+        const match = line.trim().match(/^(test|it)\(['"`](.*)['"`],/);
+
+        if (match) {
+          testNames.push(match[2]);
+        }
+      });
+    });
+
+    return testNames;
+  };
+
+  let outputText = '';
+
+  const appendToOutput = line => {
+    if (outputText) outputText += '\n';
+    outputText += line;
+  };
+
+  const scenariosMarkdown = fs.readFileSync(testScenarioFilePath, 'utf8');
+
+  const testNames = await gatherTestNames();
+
+  const testNamesWithCovered = testNames.reduce((acc, current) => {
     acc[current] = false;
     return acc;
   }, {});
@@ -57,7 +61,7 @@ const outputLine = text => {
     }
 
     if (!line.match(/^\|(given|when)/i)) {
-      outputLine(line);
+      appendToOutput(line);
       continue;
     }
 
@@ -67,12 +71,14 @@ const outputLine = text => {
 
       if (expectedTestName in testNamesWithCovered) {
         testNamesWithCovered[expectedTestName] = true;
-        outputLine(`|${scenario}|${PASS}|`);
+        appendToOutput(`|${scenario}|${PASS}|`);
+        coveredTestCount += 1;
       } else {
-        outputLine(`|${scenario}|${FAIL}|`);
+        appendToOutput(`|${scenario}|${FAIL}|`);
+        uncoveredTestCount += 1;
       }
     } else {
-      outputLine(line);
+      appendToOutput(line);
       // The user probably wanted this to be a test scenario, but they did it wrong
       console.error('Poorly formatted line:', line);
     }
@@ -80,12 +86,16 @@ const outputLine = text => {
 
   Object.entries(testNamesWithCovered).forEach(([key, value]) => {
     if (value === false) {
-      // console.warn(`"${key}" doesn't exist in the test scenarios`);
       console.warn('No such scenario:', key);
     }
   });
 
-  fs.writeFileSync(path.resolve(__dirname, './TEST_RESULTS.md'), outputText);
+  const scenarioCount = coveredTestCount + uncoveredTestCount;
+  const coveragePercent = Math.round((coveredTestCount / scenarioCount * 100));
+  const coverageString = `${coveragePercent}% (${coveredTestCount.toLocaleString()}/${scenarioCount.toLocaleString()})`;
+
+  outputText = outputText.replace(/(\*\*Coverage\*\*: ).*(\n)/, `$1${coverageString}$2`);
+  fs.writeFileSync(testScenarioFilePath, outputText);
 
   console.timeEnd('Calculate scenario coverage');
 })();
