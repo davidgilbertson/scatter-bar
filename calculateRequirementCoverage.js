@@ -2,7 +2,7 @@
  *
  * This file gathers test scenario coverage.
  * - It collects a list of test names by parsing test files
- * - It collects a list of scenarios by parsing TEST_SCENARIOS.md
+ * - It collects a list of scenarios by parsing REQUIREMENTS.md
  * - It compares the two, then updates TEST_SCENARIOS.md to show what's covered and what's not
  *
  **/
@@ -19,7 +19,7 @@ const glob = promisify(require('glob'));
   const FAIL = ':x:';
   let coveredTestCount = 0;
   let uncoveredTestCount = 0;
-  const testScenarioFilePath = path.resolve(__dirname, './TEST_SCENARIOS.md');
+  const testScenarioFilePath = path.resolve(__dirname, './REQUIREMENTS.md');
 
   const gatherTestNames = async () => {
     // Changing working directory saves heaps of time
@@ -60,6 +60,7 @@ const glob = promisify(require('glob'));
   }, {});
 
   let headers = [];
+  let tableRow = 0;
 
   for (const rawLine of scenariosMarkdown.split('\n')) {
     const line = rawLine.trim();
@@ -72,36 +73,42 @@ const glob = promisify(require('glob'));
       headers[headerDepth - 1] = headerMatches[2];
     }
 
-    const scenarioMatch = line.match(/^\|(\w.*)\|.*\|/);
+    if (line.startsWith('|')) {
+      tableRow++;
+    } else {
+      tableRow = 0;
+    }
 
-    if (!scenarioMatch) {
+    if (tableRow < 3) {
       appendToOutput(line);
       continue;
     }
 
-    const scenario = scenarioMatch[1];
-    const expectedTestName = `${headers.join(' > ')} > ${scenario}`;
+    const requirementMatch = line.match(/\|.*?\|(.*)\|/);
+
+    const requirement = requirementMatch[1];
+    const expectedTestName = `${headers.join(' > ')} > ${requirement}`;
 
     if (expectedTestName in testNamesWithCovered) {
       testNamesWithCovered[expectedTestName] = true;
-      appendToOutput(`|${scenario}|${PASS}|`);
+      appendToOutput(`|${PASS}|${requirement}|`);
       coveredTestCount += 1;
     } else {
       console.warn(' --> Not covered:', expectedTestName);
-      appendToOutput(`|${scenario}|${FAIL}|`);
+      appendToOutput(`|${FAIL}|${requirement}|`);
       uncoveredTestCount += 1;
     }
   }
 
   Object.entries(testNamesWithCovered).forEach(([key, value]) => {
     if (value === false) {
-      console.warn(' --> No such scenario:', key);
+      console.warn(' --> No such requirement:', key);
     }
   });
 
-  const scenarioCount = coveredTestCount + uncoveredTestCount;
-  const coveragePercent = Math.round((coveredTestCount / scenarioCount * 100));
-  const coverageString = `${coveragePercent}% (${coveredTestCount.toLocaleString()}/${scenarioCount.toLocaleString()})`;
+  const requirementCount = coveredTestCount + uncoveredTestCount;
+  const coveragePercent = Math.round((coveredTestCount / requirementCount * 100));
+  const coverageString = `${coveragePercent}% (${coveredTestCount.toLocaleString()}/${requirementCount.toLocaleString()})`;
 
   outputText = outputText.replace(/(\*\*Coverage\*\*: ).*(\n)/, `$1${coverageString}$2`);
   fs.writeFileSync(testScenarioFilePath, outputText);

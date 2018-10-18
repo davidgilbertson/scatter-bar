@@ -20,7 +20,7 @@
     "build": "react-scripts build",
     "build-deploy": "npm run build && firebase deploy",
     "test": "react-scripts test --env=jsdom",
-    "coverage": "node -r esm ./calculateScenarioCoverage.js",
+    "coverage": "node -r esm ./calculateRequirementCoverage.js",
     "eject": "react-scripts eject"
   },
   "browserslist": [
