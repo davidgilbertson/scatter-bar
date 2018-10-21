@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
-import styles from './App.module.css';
 import Chart from '../Chart/Chart';
 import Table from '../Table/Table';
 import mockData from '../data/mock';
+import { GlobalStyle } from '../global.styles';
+import {
+  Header,
+  Title,
+  Select,
+  Option,
+  Page,
+} from './App.styles';
 
 const findById = (arr, id) => arr.find(item => item.id === id);
 
@@ -219,13 +226,13 @@ class App extends Component {
 
     return (
       <React.Fragment>
-        <header className={styles.header}>
-          <h1 className={styles.title}>
+        <GlobalStyle />
+        <Header>
+          <Title>
             Scatter bar playground
-          </h1>
+          </Title>
 
-          <select
-            className={styles.select}
+          <Select
             onChange={e => {
               if (e.target.value === 'NEW STORY') {
                 this.addStory();
@@ -239,18 +246,18 @@ class App extends Component {
             value={state.currentStoryId}
           >
             {state.stories.map(story => (
-              <option key={story.id} value={story.id}>
+              <Option key={story.id} value={story.id}>
                 {story.name}
-              </option>
+              </Option>
             ))}
 
-            <option disabled>-----------</option>
+            <Option disabled>-----------</Option>
 
-            <option value="NEW STORY">Add a new story</option>
-          </select>
-        </header>
+            <Option value="NEW STORY">Add a new story</Option>
+          </Select>
+        </Header>
 
-        <div className={styles.page}>
+        <Page>
           <Table
             story={currentStory}
             addSet={this.addSet}
@@ -263,7 +270,7 @@ class App extends Component {
           />
 
           <Chart story={currentStory} />
-        </div>
+        </Page>
       </React.Fragment>
     );
   }

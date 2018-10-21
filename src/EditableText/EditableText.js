@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import styles from './EditableText.module.css';
+import {
+  TextArea,
+  EditButton,
+  StaticText,
+} from './Editable.styles';
 
 class EditableText extends Component {
   constructor(props) {
@@ -59,10 +63,9 @@ class EditableText extends Component {
 
     return state.editMode
     ? (
-      <textarea
+      <TextArea
         data-testid="EditableText__test-area"
         rows={props.rows || 3}
-        className={styles.textArea}
         ref={this.textAreaRef}
         onChange={e => {
           props.onChange(e.target.value);
@@ -70,10 +73,10 @@ class EditableText extends Component {
         value={props.text}
       />
     ) : (
-      <div className={`${styles.staticText} ${props.className}`} onClick={this.enterEditMode}>
+      <StaticText className={props.className} onClick={this.enterEditMode}>
         {props.text}
-        <button className={styles.editButton}>EDIT</button>
-      </div>
+        <EditButton>EDIT</EditButton>
+      </StaticText>
     );
   }
 }

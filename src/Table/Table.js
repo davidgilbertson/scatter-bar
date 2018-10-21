@@ -1,15 +1,21 @@
 import React from 'react';
-import styles from './Table.module.css';
-import Button from '../Button/Button';
+import Button from '../Button/Button.styles';
 import TableRow from '../TableRow/TableRow';
 import EditableText from '../EditableText/EditableText';
-import Panel from '../Panel/Panel';
+import {
+  AddSetWrapper,
+  DeleteButton,
+  Header,
+  Sets,
+  TablePanel,
+  Title,
+} from './Table.styles';
 
 const Table = props => (
-  <Panel className={styles.panel} data-testid="Table">
-    <div className={styles.header}>
-      <EditableText
-        className={styles.title}
+  <TablePanel data-testid="Table">
+    <Header>
+      <Title
+        as={EditableText}
         rows={2}
         onChange={newName => {
           props.updateStoryName(newName);
@@ -17,17 +23,16 @@ const Table = props => (
         text={props.story.name}
       />
 
-      <button
-        className={styles.deleteButton}
+      <DeleteButton
         onClick={() => {
           props.removeStory(props.story.id);
         }}
       >
         ✕
-      </button>
-    </div>
+      </DeleteButton>
+    </Header>
 
-    <div className={styles.sets}>
+    <Sets>
       {props.story.sets.map((set, index) => (
         <TableRow
           key={set.id}
@@ -40,14 +45,14 @@ const Table = props => (
           removeSet={props.removeSet}
         />
       ))}
-    </div>
+    </Sets>
 
-    <div className={styles.addSetWrapper}>
+    <AddSetWrapper>
       <Button onClick={props.addSet}>
         Add a new set
       </Button>
-    </div>
-  </Panel>
+    </AddSetWrapper>
+  </TablePanel>
 );
 
 export default Table;

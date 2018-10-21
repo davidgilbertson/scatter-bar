@@ -1,7 +1,17 @@
 import React, { Component } from 'react';
-import styles from './TableRow.module.css';
-import Button from '../Button/Button';
+import Button from '../Button/Button.styles';
 import EditableText from '../EditableText/EditableText';
+import {
+  SetNameWrapper,
+  SetName,
+  Inputs,
+  Input,
+  Values,
+  DeleteValueButton,
+  Value,
+  DeleteWrapper,
+  DeleteButton,
+} from './TableRow.styles';
 
 class TableRow extends Component {
   constructor(props) {
@@ -24,19 +34,18 @@ class TableRow extends Component {
 
     return (
       <React.Fragment>
-        <div className={styles.setNameWrapper}>
-          <EditableText
-            className={styles.setName}
+        <SetNameWrapper>
+          <SetName
+            as={EditableText}
             onChange={newSetName => {
               props.changeSetName(newSetName, props.set.id);
             }}
             text={props.set.name}
           />
-        </div>
+        </SetNameWrapper>
 
-        <form
+        <Inputs
           data-testid="TableRow__form"
-          className={styles.inputs}
           onSubmit={e => {
             e.preventDefault();
             const newValue = state.newValue;
@@ -52,9 +61,8 @@ class TableRow extends Component {
             this.inputEl.current.focus();
           }}
         >
-          <input
+          <Input
             ref={this.inputEl}
-            className={styles.input}
             // TODO (davidg): allow decimals!
             type="number"
             autoFocus={props.rowIndex === 0}
@@ -87,14 +95,13 @@ class TableRow extends Component {
           <Button disabled={!isNewValueValid}>
             Add
           </Button>
-        </form>
+        </Inputs>
 
-        <div className={styles.values} data-testid="TableRow__values">
+        <Values data-testid="TableRow__values">
           {props.set.data.map((value, valueIndex) => (
-            <span className={styles.value} key={valueIndex}>
+            <Value key={valueIndex}>
               {value.toLocaleString()}
-              <button
-                className={styles.deleteValueButton}
+              <DeleteValueButton
                 tabIndex="-1"
                 title="Remove value from set"
                 onClick={() => {
@@ -103,22 +110,21 @@ class TableRow extends Component {
                 }}
               >
                 ✕
-              </button>
-          </span>
+              </DeleteValueButton>
+          </Value>
           ))}
-        </div>
+        </Values>
 
-        <div className={styles.deleteWrapper}>
-          <button
-            className={styles.deleteButton}
+        <DeleteWrapper>
+          <DeleteButton
             title="Remove set"
             onClick={() => {
               props.removeSet(props.set.id);
             }}
           >
             ✕
-          </button>
-        </div>
+          </DeleteButton>
+        </DeleteWrapper>
       </React.Fragment>
     );
   }

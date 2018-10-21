@@ -1,8 +1,17 @@
 import React from 'react';
-import styles from './Chart.module.css';
 import scientificNotation from '../utils/scientificNotation';
 import toSignificantFigures from '../utils/toSignificantFigures';
-import Panel from '../Panel/Panel';
+import {
+  ChartPanel,
+  Title,
+  Body,
+  SetLabel,
+  Bar,
+  Scale,
+  ScaleLabelWrapper,
+  ScaleLabel,
+  Mark,
+} from './Chart.styles';
 
 // const getMedian = (arr) => {
 //   const midPoint = arr.length / 2;
@@ -54,50 +63,42 @@ const Chart = (props) => {
   const {scaleValues, scaleMax} = getScaleValues(largestValue * 1.05);
 
   return (
-    <Panel className={styles.panel} data-testid="Chart">
-      <h1 className={styles.title}>{props.story.name}</h1>
+    <ChartPanel data-testid="Chart">
+      <Title>{props.story.name}</Title>
 
-      <div className={styles.body}>
+      <Body>
         {props.story.sets.map((set, i) => (
           <React.Fragment key={i}>
-            <div className={styles.setLabel}>
+            <SetLabel>
               {set.name}
-            </div>
+            </SetLabel>
 
-            <div className={styles.bar}>
+            <Bar>
               {set.data.map((value, i) => (
-                <div
+                <Mark
                   key={i}
-                  className={styles.mark}
                   title={value}
-                  style={{
-                    left: `${(value / scaleMax) * 100}%`,
-                  }}
+                  left={value / scaleMax}
                 />
               ))}
-            </div>
+            </Bar>
           </React.Fragment>
         ))}
 
-        <div className={styles.scale}>
-          <div className={styles.scaleLabelWrapper}>
+        <Scale>
+          <ScaleLabelWrapper>
             {scaleValues.map(label => (
-              <div
+              <ScaleLabel
                 key={label}
-                className={styles.scaleLabel}
-                style={{
-                  left: `${(label / scaleMax) * 100}%`,
-                  transform: 'translateX(-50%)',
-                }}
+                left={label / scaleMax}
               >
                 {label.toLocaleString()}
-              </div>
+              </ScaleLabel>
             ))}
-          </div>
-        </div>
-      </div>
-
-    </Panel>
+          </ScaleLabelWrapper>
+        </Scale>
+      </Body>
+    </ChartPanel>
   );
 };
 
