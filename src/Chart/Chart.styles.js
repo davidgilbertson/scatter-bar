@@ -69,9 +69,9 @@ export const ScaleLabel = styled.div`
 export const Mark = styled.div`
   position: absolute;
   top: 5px;
+  left: ${props => `${props.left * 100}%`};
   bottom: 5px;
   width: 2px;
   background: ${COLORS.BLUE__500};
   filter: blur(1px);
-  left: ${props => `${props.left * 100}%`};
 `;
