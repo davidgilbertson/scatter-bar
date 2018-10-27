@@ -3,6 +3,7 @@ import styles from './Chart.module.css';
 import scientificNotation from '../utils/scientificNotation';
 import toSignificantFigures from '../utils/toSignificantFigures';
 import Panel from '../Panel/Panel';
+import { register, store } from '../magicStore';
 
 // const getMedian = (arr) => {
 //   const midPoint = arr.length / 2;
@@ -44,10 +45,10 @@ const getScaleValues = max => {
   }
 };
 
-const Chart = (props) => {
-  if (!props.story.sets.length) return null;
+const Chart = () => {
+  if (!store.currentStory.sets.length) return null;
 
-  const largestValue = Math.max(...props.story.sets.map(set => Math.max(...set.data)));
+  const largestValue = Math.max(...store.currentStory.sets.map(set => Math.max(...set.data)));
 
   if (largestValue <=0) return null;
 
@@ -55,10 +56,10 @@ const Chart = (props) => {
 
   return (
     <Panel className={styles.panel} data-testid="Chart">
-      <h1 className={styles.title}>{props.story.name}</h1>
+      <h1 className={styles.title}>{store.currentStory.name}</h1>
 
       <div className={styles.body}>
-        {props.story.sets.map((set, i) => (
+        {store.currentStory.sets.map((set, i) => (
           <React.Fragment key={i}>
             <div className={styles.setLabel}>
               {set.name}
@@ -101,4 +102,4 @@ const Chart = (props) => {
   );
 };
 
-export default Chart;
+export default register(Chart);

@@ -4,23 +4,30 @@ import Button from '../Button/Button';
 import TableRow from '../TableRow/TableRow';
 import EditableText from '../EditableText/EditableText';
 import Panel from '../Panel/Panel';
+import { register, store } from '../magicStore';
+import uuid from 'uuid/v4';
+import removeById from '../utils/removeById';
 
-const Table = props => (
+const Table = () => (
   <Panel className={styles.panel} data-testid="Table">
     <div className={styles.header}>
       <EditableText
         className={styles.title}
         rows={2}
-        onChange={newName => {
-          props.updateStoryName(newName);
-        }}
-        text={props.story.name}
+        onChange={newName => store.currentStory.name = newName}
+        text={store.currentStory.name}
       />
 
       <button
         className={styles.deleteButton}
         onClick={() => {
-          props.removeStory(props.story.id);
+          if (store.stories.length === 1) {
+            window.alert(`I'm afraid I can't let you delete the last story, Dave.`);
+            if (document.activeElement) document.activeElement.blur();
+          } else {
+            store.stories = removeById(store.stories, store.currentStory.id);
+            store.currentStory = store.stories[0];
+          }
         }}
       >
         ✕
@@ -28,26 +35,31 @@ const Table = props => (
     </div>
 
     <div className={styles.sets}>
-      {props.story.sets.map((set, index) => (
+      {store.currentStory.sets.map((set, index) => (
         <TableRow
           key={set.id}
           set={set}
-          story={props.story}
+          story={store.currentStory}
           rowIndex={index}
-          addValueToSet={props.addValueToSet}
-          removeValueFromSet={props.removeValueFromSet}
-          changeSetName={props.changeSetName}
-          removeSet={props.removeSet}
         />
       ))}
     </div>
 
     <div className={styles.addSetWrapper}>
-      <Button onClick={props.addSet}>
+      <Button
+        onClick={() => {
+          store.currentStory.sets.push({
+            id: uuid(),
+            name: 'A new set',
+            data: [],
+            new: true,
+          });
+        }}
+      >
         Add a new set
       </Button>
     </div>
   </Panel>
 );
 
-export default Table;
+export default register(Table);

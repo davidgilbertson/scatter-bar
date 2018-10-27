@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import styles from './TableRow.module.css';
 import Button from '../Button/Button';
 import EditableText from '../EditableText/EditableText';
+import { register } from '../magicStore';
+import removeById from '../utils/removeById';
 
 class TableRow extends Component {
   constructor(props) {
@@ -18,6 +20,15 @@ class TableRow extends Component {
     this.setState({ newValue });
   };
 
+  componentDidMount() {
+    // We want to auto-focus the input for a newly added set
+    if (this.props.set.new) {
+      delete this.props.set.new;
+
+      this.inputEl.current.focus();
+    }
+  }
+
   render () {
     const { props, state } = this;
     const isNewValueValid = state.newValue !== '' && !isNaN(Number(state.newValue));
@@ -28,7 +39,7 @@ class TableRow extends Component {
           <EditableText
             className={styles.setName}
             onChange={newSetName => {
-              props.changeSetName(newSetName, props.set.id);
+              props.set.name = newSetName
             }}
             text={props.set.name}
           />
@@ -45,7 +56,7 @@ class TableRow extends Component {
 
             if (isNaN(Number(newValue))) return;
 
-            props.addValueToSet(Number(state.newValue), props.set.id);
+            props.set.data.push(Number(state.newValue));
 
             this.updateValue('');
 
@@ -55,7 +66,6 @@ class TableRow extends Component {
           <input
             ref={this.inputEl}
             className={styles.input}
-            // TODO (davidg): allow decimals!
             type="number"
             autoFocus={props.rowIndex === 0}
             value={state.newValue}
@@ -70,7 +80,7 @@ class TableRow extends Component {
 
                   if (isNaN(Number(maybeNumber))) return;
 
-                  props.addValueToSet(Number(maybeNumber), props.set.id);
+                  props.set.data.push(Number(maybeNumber));
                 }).filter(Boolean);
 
                 this.inputEl.current.focus();
@@ -98,7 +108,7 @@ class TableRow extends Component {
                 tabIndex="-1"
                 title="Remove value from set"
                 onClick={() => {
-                  props.removeValueFromSet(valueIndex, props.set.id);
+                  props.set.data.splice(valueIndex, 1);
                   this.inputEl.current.focus();
                 }}
               >
@@ -113,7 +123,7 @@ class TableRow extends Component {
             className={styles.deleteButton}
             title="Remove set"
             onClick={() => {
-              props.removeSet(props.set.id);
+              props.story.sets = removeById(props.story.sets, props.set.id);
             }}
           >
             ✕
@@ -124,4 +134,4 @@ class TableRow extends Component {
   }
 }
 
-export default TableRow;
+export default register(TableRow);
