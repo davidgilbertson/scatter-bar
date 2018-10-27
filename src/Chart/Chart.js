@@ -3,7 +3,7 @@ import styles from './Chart.module.css';
 import scientificNotation from '../utils/scientificNotation';
 import toSignificantFigures from '../utils/toSignificantFigures';
 import Panel from '../Panel/Panel';
-import { register, store } from '../magicStore';
+import { register, store } from '../recollect';
 
 // const getMedian = (arr) => {
 //   const midPoint = arr.length / 2;

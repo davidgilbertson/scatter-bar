@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App/App';
 import registerServiceWorker from './registerServiceWorker';
-import { afterChange, store } from './magicStore';
+import { afterChange, store } from './recollect';
 import * as storage from './utils/storage';
 
 ReactDOM.render(<App />, document.getElementById('root'));

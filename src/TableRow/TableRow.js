@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styles from './TableRow.module.css';
 import Button from '../Button/Button';
 import EditableText from '../EditableText/EditableText';
-import { register } from '../magicStore';
+import { register } from '../recollect';
 import removeById from '../utils/removeById';
 
 class TableRow extends Component {

@@ -5,7 +5,7 @@ import Chart from '../Chart/Chart';
 import Table from '../Table/Table';
 import mockData from '../data/mock';
 import * as storage from '../utils/storage';
-import { register, store } from '../magicStore';
+import { register, store } from '../recollect';
 import findById from '../utils/findById';
 
 // simulate asynchronous data loading

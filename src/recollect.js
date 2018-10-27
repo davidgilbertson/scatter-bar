@@ -1,10 +1,21 @@
 import React, { Component } from 'react';
+import * as storage from './utils/storage';
 
 let currentCaller;
 
 const rawStore = {};
 
 let listeners = [];
+
+let DEBUG = storage.getItem('DEBUG') || false;
+
+if (DEBUG) {
+  console.log('Debugging is on. Use `__RR__.debugOff()` to turn it off');
+}
+
+const log = (...args) => {
+  if (DEBUG) console.log(...args);
+};
 
 // TODO (davidg): this is not a 100% test for an object
 const isObject = (item) => (
@@ -24,15 +35,16 @@ const addListener = newListener => {
   // I could minimise the looping.
   // TODO (davidg): maybe just allow duplicates (within a caller). For one set() there's thousands
   // of get()s, so filtering out duplicates in a set should be faster.
+  console.time(`Checked ${listeners.length} listeners`);
   const existingListener = listeners.some(listener => (
     listener.caller === newListener.caller &&
     listener.target === newListener.target &&
     listener.prop === newListener.prop
   ));
+  console.timeEnd(`Checked ${listeners.length} listeners`);
 
   if (!existingListener) {
     listeners.push(newListener);
-    // console.log('  --  >  magicStore.js:35 > addListener > listeners', listeners);
   }
 };
 
@@ -106,7 +118,7 @@ const proxyHandler = {
       ) {
         // RITMO check this logic. When could one set() have two matching listeners?
         updatedListeners.push(listener.caller);
-        // console.info(`Updating ${listener.caller._displayName}`);
+        log(`Updating ${listener.caller._displayName}`);
 
         listener.caller.forceUpdate();
       }
@@ -143,18 +155,18 @@ export const register = (WrappedComponent, options = { frozen: true }) => {
     shouldComponentUpdate = () => !options.frozen;
 
     componentDidMount() {
-      console.info(`${this._displayName}.componentDidMount`);
+      log(`${this._displayName}.componentDidMount`);
       // currentCaller = null;
       stopRecordingGetsForComponent();
     }
 
     componentWillUnmount = () => {
-      console.info(`${this._displayName}.componentWillUnmount`);
+      log(`${this._displayName}.componentWillUnmount`);
       removeListenersForComponent(this);
     };
 
     render() {
-      console.info(`${this._displayName}.render`);
+      log(`${this._displayName}.render`);
       startRecordingGetsForComponent(this);
 
       return <WrappedComponent {...this.props} />
@@ -168,4 +180,12 @@ window.__RR__ = {
   store,
   getStore: () => rawStore,
   getListeners: () => listeners,
+  debugOn: () => {
+    DEBUG = true;
+    storage.setItem('DEBUG', DEBUG);
+  },
+  debugOff: () => {
+    DEBUG = false;
+    storage.setItem('DEBUG', DEBUG);
+  },
 };
