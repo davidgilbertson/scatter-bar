@@ -66,6 +66,7 @@ class TableRow extends Component {
           <input
             ref={this.inputEl}
             className={styles.input}
+            // TODO (davidg): allow decimals!
             type="number"
             autoFocus={props.rowIndex === 0}
             value={state.newValue}

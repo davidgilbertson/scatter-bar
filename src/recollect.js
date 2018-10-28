@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import * as storage from './utils/storage';
+import isObject from './utils/isObject';
 
-let currentCaller;
-
+// Lot's of globals here, TODO break out into modules
 const rawStore = {};
+
+let currentComponent;
 
 let listeners = [];
 
@@ -17,31 +19,17 @@ const log = (...args) => {
   if (DEBUG) console.log(...args);
 };
 
-// TODO (davidg): this is not a 100% test for an object
-const isObject = (item) => (
-  typeof item === 'object' &&
-  !Array.isArray(item) &&
-  item !== null &&
-  item !== true &&
-  item !== false
-);
-
 const addListener = newListener => {
-  if (!newListener.caller) return;
+  if (!newListener.component) return;
 
-  // TODO (davidg): think about listeners shape
-  // This is looped over potentially thousands of times in a render cycle, X thousands of entries
-  // If it was an object, with caller as a prop, then prop as a prop, the an array of targets,
-  // I could minimise the looping.
-  // TODO (davidg): maybe just allow duplicates (within a caller). For one set() there's thousands
-  // of get()s, so filtering out duplicates in a set should be faster.
-  console.time(`Checked ${listeners.length} listeners`);
+  // Perhaps this could be more efficient than looping over every listener
+  // for every get. BUT, it will loop ~1,000 items in 0.01ms so is very likely to be
+  // nothing compared to updating the DOM
   const existingListener = listeners.some(listener => (
-    listener.caller === newListener.caller &&
+    listener.component === newListener.component &&
     listener.target === newListener.target &&
     listener.prop === newListener.prop
   ));
-  console.timeEnd(`Checked ${listeners.length} listeners`);
 
   if (!existingListener) {
     listeners.push(newListener);
@@ -57,50 +45,35 @@ const proxyHandler = {
   get(target, prop) {
     const result = target[prop];
 
-    // If the RESULT is an array, then we want a listener in case the whole array is replaced
-    if (Array.isArray(result)) {
-      addListener({
-        caller: currentCaller,
-        target,
-        prop,
-      });
+    let returnObject;
 
-      return new Proxy(result, proxyHandler);
+    if (Array.isArray(result) || isObject(result)) {
+      // We need to recursively wrap arrays/objects in proxies
+      returnObject = new Proxy(result, proxyHandler);
+    } else {
+      returnObject = result;
     }
 
-    // If the TARGET is an array...
     if (Array.isArray(target)) {
-      // If a component checks someArray.length OR a component uses someArray.forEach() or .map() or .reduce() etc
-      // Then they need to be notified when the length changes
+      // If the TARGET is an array, e.g. if a component
+      // checks someArray.length OR uses someArray.forEach() or .map() or .reduce(), etc.
+      // Then it needs to be notified when the length changes
 
       addListener({
-        caller: currentCaller,
+        component: currentComponent,
         target,
-        prop: 'length', // essentially subscribing this caller to any change in the array length
+        prop: 'length',
       });
-
-      return isObject(result)
-        ? new Proxy(result, proxyHandler)
-        :result;
-    }
-
-    if (isObject(result)) {
+    } else {
+      // otherwise, add a listener for whenever the target/prop is
       addListener({
-        caller: currentCaller,
+        component: currentComponent,
         target,
         prop,
       });
-      return new Proxy(result, proxyHandler);
     }
 
-    // The property isn't an array or an object
-    addListener({
-      caller: currentCaller,
-      target,
-      prop,
-    });
-
-    return result;
+    return returnObject;
   },
 
   // TODO (davidg): handle the syntax: "'prop' in object" with trap
@@ -108,23 +81,13 @@ const proxyHandler = {
   set(target, prop, value) {
     target[prop] = value;
 
-    const updatedListeners = [];
-
     listeners.forEach(listener => {
-      if (
-        listener.prop === prop &&
-        listener.target === target &&
-        !updatedListeners.includes(listener.caller)
-      ) {
-        // RITMO check this logic. When could one set() have two matching listeners?
-        updatedListeners.push(listener.caller);
-        log(`Updating ${listener.caller._displayName}`);
+      if (listener.prop === prop && listener.target === target) {
+        log(`Updating ${listener.component._displayName}`);
 
-        listener.caller.forceUpdate();
+        listener.component.forceUpdate();
       }
     });
-
-    updatedListeners.length = 0;
 
     manualListeners.forEach(cb => cb());
 
@@ -132,22 +95,22 @@ const proxyHandler = {
   },
 };
 
-const removeListenersForComponent = caller => {
-  listeners = listeners.filter(listener => listener.caller !== caller);
+const removeListenersForComponent = component => {
+  listeners = listeners.filter(listener => listener.component !== component);
 };
 
 const startRecordingGetsForComponent = component => {
   removeListenersForComponent(component);
-  currentCaller = component;
+  currentComponent = component;
 };
 
 const stopRecordingGetsForComponent = () => {
-  currentCaller = null;
+  currentComponent = null;
 };
 
 export const register = (WrappedComponent, options = { frozen: true }) => {
   return class extends Component {
-    _displayName = `Registered(${WrappedComponent.displayName || WrappedComponent.name})`;
+    _displayName = `Recollect(${WrappedComponent.displayName || WrappedComponent.name})`;
 
     // When React renders a parent component, it will naturally try to render its children.
     // We never want it to do this, because we already know which children to update
@@ -156,7 +119,6 @@ export const register = (WrappedComponent, options = { frozen: true }) => {
 
     componentDidMount() {
       log(`${this._displayName}.componentDidMount`);
-      // currentCaller = null;
       stopRecordingGetsForComponent();
     }
 
