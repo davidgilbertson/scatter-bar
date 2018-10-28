@@ -11,7 +11,6 @@ import findById from '../utils/findById';
 // simulate asynchronous data loading
 setTimeout(() => {
   const data = storage.getItem(storage.KEYS.APP_DATA) || mockData;
-  // const data = mockData;
   store.stories = data.stories;
   // Note, we don't load the currentStory directly from LS because we want it to be
   // a reference to the actual story object
