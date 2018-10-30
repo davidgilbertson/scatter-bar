@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import uuid from 'uuid/v4';
+import { collect, store } from 'react-recollect';
 import styles from './App.module.css';
 import Chart from '../Chart/Chart';
 import Table from '../Table/Table';
 import mockData from '../data/mock';
 import * as storage from '../utils/storage';
-import { register, store } from '../recollect';
 import findById from '../utils/findById';
 
 // simulate asynchronous data loading
@@ -70,4 +70,4 @@ class App extends Component {
   }
 }
 
-export default register(App);
+export default collect(App);

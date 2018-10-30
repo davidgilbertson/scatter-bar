@@ -1,10 +1,10 @@
 import React from 'react';
+import { collect, store } from 'react-recollect';
 import styles from './Table.module.css';
 import Button from '../Button/Button';
 import TableRow from '../TableRow/TableRow';
 import EditableText from '../EditableText/EditableText';
 import Panel from '../Panel/Panel';
-import { register, store } from '../recollect';
 import uuid from 'uuid/v4';
 import removeById from '../utils/removeById';
 
@@ -62,4 +62,4 @@ const Table = () => (
   </Panel>
 );
 
-export default register(Table);
+export default collect(Table);

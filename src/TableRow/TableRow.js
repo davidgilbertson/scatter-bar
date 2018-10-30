@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import { collect } from 'react-recollect';
 import styles from './TableRow.module.css';
 import Button from '../Button/Button';
 import EditableText from '../EditableText/EditableText';
-import { register } from '../recollect';
 import removeById from '../utils/removeById';
 
 class TableRow extends Component {
@@ -135,4 +135,4 @@ class TableRow extends Component {
   }
 }
 
-export default register(TableRow);
+export default collect(TableRow);
