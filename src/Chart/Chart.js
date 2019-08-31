@@ -1,21 +1,21 @@
 import React from 'react';
-import { collect, store } from 'react-recollect';
+import { collect } from 'react-recollect';
 import styles from './Chart.module.css';
 import scientificNotation from '../utils/scientificNotation';
 import toSignificantFigures from '../utils/toSignificantFigures';
 import Panel from '../Panel/Panel';
 
-// const getMedian = (arr) => {
-//   const midPoint = arr.length / 2;
-//
-//   return midPoint % 1
-//     ? arr[midPoint - 0.5]
-//     : (arr[midPoint - 1] + arr[midPoint]) / 2;
-// };
+const getMedian = arr => {
+  if (!arr || !arr.length) return '';
 
-// const sortByMedian = sets => sets.slice().sort((setA, setB) => (
-//   getMedian(setA.data) - getMedian(setB.data)
-// ));
+  const sortedArray = arr.slice();
+  sortedArray.sort();
+  const midPoint = arr.length / 2;
+
+  return midPoint % 1
+    ? sortedArray[midPoint - 0.5]
+    : (sortedArray[midPoint - 1] + sortedArray[midPoint]) / 2;
+};
 
 const getScaleValues = max => {
   const [coefficient, exponent] = scientificNotation(max);
@@ -45,10 +45,13 @@ const getScaleValues = max => {
   }
 };
 
-const Chart = () => {
-  if (!store.currentStory.sets.length) return null;
+const Chart = props => {
+  // TODO (davidg): can I now just pass currentStory down?
+  const currentStory = props.store.stories[props.store.currentStoryIndex];
 
-  const largestValue = Math.max(...store.currentStory.sets.map(set => Math.max(...set.data)));
+  if (!currentStory.sets.length) return null;
+
+  const largestValue = Math.max(...currentStory.sets.map(set => Math.max(...set.data)));
 
   if (largestValue <=0) return null;
 
@@ -56,10 +59,10 @@ const Chart = () => {
 
   return (
     <Panel className={styles.panel} data-testid="Chart">
-      <h1 className={styles.title}>{store.currentStory.name}</h1>
+      <h1 className={styles.title}>{currentStory.name}</h1>
 
       <div className={styles.body}>
-        {store.currentStory.sets.map((set, i) => (
+        {currentStory.sets.map((set, i) => (
           <React.Fragment key={i}>
             <div className={styles.setLabel}>
               {set.name}
@@ -77,6 +80,8 @@ const Chart = () => {
                 />
               ))}
             </div>
+
+            <div className={styles.median}>{getMedian(set.data)}</div>
           </React.Fragment>
         ))}
 

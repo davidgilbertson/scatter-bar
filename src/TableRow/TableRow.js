@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { collect } from 'react-recollect';
 import styles from './TableRow.module.css';
 import Button from '../Button/Button';
 import EditableText from '../EditableText/EditableText';
@@ -135,4 +134,4 @@ class TableRow extends Component {
   }
 }
 
-export default collect(TableRow);
+export default TableRow;
