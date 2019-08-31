@@ -2,13 +2,17 @@ import React from 'react';
 import {
   render,
   fireEvent,
-  cleanup,
+  cleanup, wait,
 } from 'react-testing-library';
 import App from '../App/App';
+import * as storage from '../utils/storage';
+import init from '../utils/init';
+
+init();
 
 afterAll(cleanup);
 
-test('Storage > When a value is added, it should be remembered after the page is refreshed', () => {
+test('Storage > When a value is added, it should be remembered after the page is refreshed', async () => {
   localStorage.clear();
 
   const {
@@ -16,6 +20,7 @@ test('Storage > When a value is added, it should be remembered after the page is
     getByTestId,
   } = render(<App />);
 
+  await wait(() => getByText('Random set 1'));
   expect(getByText('Random set 1')).toBeInTheDocument();
 
   const listedValues = getByTestId('TableRow__values').textContent.split('✕');
@@ -55,9 +60,11 @@ test('Storage > When a value is added, it should be remembered after the page is
   });
 
   fireEvent.click(getByText('Add'));
+  // await wait(() => false);
+  await wait();
 
   // Check it's going into localStorage
-  const storedData = JSON.parse(localStorage.getItem('app-data'));
+  const storedData = JSON.parse(localStorage.getItem(storage.KEYS.APP_DATA));
   const newSet = storedData.stories[0].sets[0];
 
   expect(newSet.data).toContain(9999);

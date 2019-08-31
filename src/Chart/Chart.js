@@ -45,9 +45,8 @@ const getScaleValues = max => {
   }
 };
 
-const Chart = props => {
-  // TODO (davidg): can I now just pass currentStory down?
-  const currentStory = props.store.stories[props.store.currentStoryIndex];
+const Chart = ({store}) => {
+  const currentStory = store.stories[store.currentStoryIndex];
 
   if (!currentStory.sets.length) return null;
 

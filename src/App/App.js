@@ -15,7 +15,7 @@ setTimeout(() => {
   store.stories = data.stories;
   store.currentStoryIndex = data.currentStoryIndex || 0;
   store.status = 'ready';
-}, Math.random() * 500);
+}, 17);
 
 const App = ({store}) => {
   if (store.status !== 'ready') return null;
@@ -39,13 +39,7 @@ const App = ({store}) => {
                 sets: [],
               };
 
-
               store.stories.push(newStory);
-              // Damn immutability means the length isn't updated yet. There must be a better way.
-              // Remind me why I couldn't batch changes?
-              // TODO (davidg): also does this mean that this component will be updated after one change
-              // to the store, potentially meaning the thing will be unmounted before the next line
-              // is called?
               store.currentStoryIndex = store.stories.length - 1;
             } else {
               store.currentStoryIndex = store.stories.findIndex(story => story.id === e.target.value);

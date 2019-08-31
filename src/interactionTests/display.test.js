@@ -7,7 +7,7 @@ import {
 } from 'react-testing-library';
 import App from '../App/App';
 
-describe('Display', () => {
+describe('Display', async () => {
   afterAll(cleanup);
 
   const {
@@ -17,10 +17,10 @@ describe('Display', () => {
     container,
   } = render(<App />);
 
-  it('Stories > Given a story with some sets, then a data panel and chart should be rendered', () => {
-    const title = getByText('An example: 9% random variation');
 
-    expect(title).not.toBe(null);
+  it('Stories > Given a story with some sets, then a data panel and chart should be rendered', async () => {
+    await wait(() => getByText('An example: 9% random variation'));
+
     expect(getByTestId('Table')).toBeInTheDocument();
     expect(getByTestId('Chart')).toBeInTheDocument();
     expect(getByText('Random set 1')).toBeInTheDocument();

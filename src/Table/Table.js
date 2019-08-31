@@ -8,8 +8,8 @@ import Panel from '../Panel/Panel';
 import uuid from 'uuid/v4';
 import removeById from '../utils/removeById';
 
-const Table = props => {
-  const currentStory = props.store.stories[props.store.currentStoryIndex];
+const Table = ({store}) => {
+  const currentStory = store.stories[store.currentStoryIndex];
 
   return (
     <Panel className={styles.panel} data-testid="Table">
@@ -24,12 +24,12 @@ const Table = props => {
         <button
           className={styles.deleteButton}
           onClick={() => {
-            if (props.store.stories.length === 1) {
+            if (store.stories.length === 1) {
               window.alert(`I'm afraid I can't let you delete the last story, Dave.`);
               if (document.activeElement) document.activeElement.blur();
             } else {
-              props.store.stories = removeById(props.store.stories, currentStory.id);
-              props.store.currentStoryIndex = 0;
+              store.stories = removeById(store.stories, currentStory.id);
+              store.currentStoryIndex = store.stories.length - 1;
             }
           }}
         >
