@@ -1,26 +1,20 @@
 import React from 'react';
 import uuid from 'uuid/v4';
-import { collect, store } from 'react-recollect';
+import { collect } from 'react-recollect';
 import styles from './App.module.css';
 import Chart from '../Chart/Chart';
 import Table from '../Table/Table';
-import mockData from '../data/mock';
-import * as storage from '../utils/storage';
-import * as log from '../utils/log';
+import * as utlUtils from '../utils/urlUtils';
+import init from '../utils/init';
 
-// simulate asynchronous data loading
-setTimeout(() => {
-  log.time('Time to interactive');
-  const data = storage.getItem(storage.KEYS.APP_DATA) || mockData;
-  store.stories = data.stories;
-  store.currentStoryIndex = data.currentStoryIndex || 0;
-  store.status = 'ready';
-}, 17);
+init();
 
 const App = ({store}) => {
   if (store.status !== 'ready') return null;
 
   const currentStory = store.stories[store.currentStoryIndex];
+
+  const urlHasId = !!(new URL(document.location)).searchParams.get('id');
 
   return (
     <React.Fragment>
@@ -59,6 +53,13 @@ const App = ({store}) => {
           <option value="NEW STORY">Add a new story</option>
         </select>
       </header>
+
+      {!urlHasId && (
+        <a
+          className={styles.permalink}
+          href={utlUtils.getWithId(store.id)}
+        >Get a unique URL to this page with your data</a>
+      )}
 
       <div className={styles.page}>
         <Table />

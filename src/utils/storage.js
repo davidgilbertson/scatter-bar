@@ -1,5 +1,6 @@
 export const KEYS = {
   APP_DATA: 'APP_DATA',
+  ID: 'id',
 };
 
 export const setItem = (key, data) => {
@@ -12,10 +13,15 @@ export const setItem = (key, data) => {
 };
 
 export const getItem = (key) => {
+  const storedItem = localStorage.getItem(key);
+
   try {
-    return JSON.parse(localStorage.getItem(key));
+    // Try and parse JSON
+    return JSON.parse(storedItem);
   } catch (err) {
-    console.error('Error reading from localStorage:', err);
-    return null;
+    // It might just be a plain string or something, so return it, or nothing
+    return storedItem || undefined;
   }
 };
+
+export const removeItem = id => window.localStorage.removeItem(id);

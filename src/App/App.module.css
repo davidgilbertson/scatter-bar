@@ -32,6 +32,21 @@
   margin: 0 auto;
 }
 
+.permalink {
+  display: block;
+  width: 100%;
+  padding: 4px 8px;
+  font-size: 14px;
+  color: var(--color-grey--600);
+}
+
+@media screen and (min-width: 600px) {
+  .permalink {
+    width: 300px;
+    margin: 0 auto;
+  }
+}
+
 @media screen and (min-width: 900px) {
   .page {
     padding-left: 20px;
