@@ -1,6 +1,6 @@
 import throttle from 'lodash.throttle';
 import { afterChange, store } from 'react-recollect';
-import * as api from '../data/api';
+import api from '../data/api';
 import * as storage from './storage';
 import * as log from './log';
 import mockData from '../data/mock';

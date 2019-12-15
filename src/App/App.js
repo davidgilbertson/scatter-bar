@@ -58,7 +58,7 @@ const App = ({store}) => {
         <a
           className={styles.permalink}
           href={utlUtils.getWithId(store.id)}
-        >Get a unique URL to this page with your data</a>
+        >Get a unique URL to this page with your data. Don't share it!</a>
       )}
 
       <div className={styles.page}>
