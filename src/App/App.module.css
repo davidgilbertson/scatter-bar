@@ -4,6 +4,7 @@
   justify-content: space-between;
   padding: 20px 30px;
   background: var(--color-blue--900);
+  flex-direction: column;
 }
 
 .title {
@@ -13,7 +14,9 @@
 }
 
 .select {
+  max-width: 100%;
   padding: 8px 16px;
+  margin-top: 16px;
   background: var(--color-blue--100);
   border: none;
   border-radius: 4px;
@@ -26,7 +29,7 @@
 }
 
 .page {
-  padding: 40px 10px;
+  padding: 0;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
@@ -35,12 +38,26 @@
 .permalink {
   display: block;
   width: 100%;
-  padding: 4px 8px;
+  padding: 8px;
+  text-align: center;
   font-size: 14px;
   color: var(--color-grey--600);
 }
 
 @media screen and (min-width: 600px) {
+  .header {
+    flex-direction: row;
+  }
+
+  .select {
+    margin-top: 0;
+    max-width: 300px;
+  }
+
+  .page {
+    padding: 10px;
+  }
+
   .permalink {
     width: 300px;
     margin: 0 auto;
@@ -48,15 +65,21 @@
 }
 
 @media screen and (min-width: 900px) {
+  .select {
+    max-width: 500px;
+  }
+
   .page {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 20px;
   }
 }
 
 @media screen and (min-width: 1200px) {
+  .select {
+    max-width: 800px;
+  }
+
   .page {
-    padding-left: 40px;
-    padding-right: 40px;
+    padding: 40px;
   }
 }

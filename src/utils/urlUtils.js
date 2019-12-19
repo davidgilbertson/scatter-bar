@@ -6,9 +6,9 @@ export const getFromUrlOrLs = key => {
 
   if (item) {
     // If there's an item in the URL, use it
-      storage.setItem(key, item);
+    storage.setItem(key, item);
 
-      return item;
+    return item;
   }
 
   // Else check local storage (maybe undefined)

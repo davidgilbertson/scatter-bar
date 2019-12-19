@@ -6,6 +6,7 @@ import Chart from '../Chart/Chart';
 import Table from '../Table/Table';
 import * as utlUtils from '../utils/urlUtils';
 import init from '../utils/init';
+import { KEYS } from '../utils/storage';
 
 init();
 
@@ -14,13 +15,13 @@ const App = ({store}) => {
 
   const currentStory = store.stories[store.currentStoryIndex];
 
-  const urlHasId = !!(new URL(document.location)).searchParams.get('id');
+  const urlHasId = !!(new URL(document.location)).searchParams.get(KEYS.ID);
 
   return (
     <React.Fragment>
       <header className={styles.header}>
         <h1 className={styles.title}>
-          Scatter bar playground
+          Scatter Bar
         </h1>
 
         <select
@@ -58,7 +59,10 @@ const App = ({store}) => {
         <a
           className={styles.permalink}
           href={utlUtils.getWithId(store.id)}
-        >Get a unique URL to this page with your data. Don't share it!</a>
+          title="You can load this URL anywhere
+          and it will load the data you have entered into Scatter Bar.
+          Anyone with the URL will be able to see and edit your data."
+        >Get a unique URL to your data. <br/> Don't share it!</a>
       )}
 
       <div className={styles.page}>

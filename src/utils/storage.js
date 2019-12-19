@@ -1,6 +1,6 @@
 export const KEYS = {
   APP_DATA: 'APP_DATA',
-  ID: 'id',
+  ID: 'your-private-data-id',
 };
 
 export const setItem = (key, data) => {
