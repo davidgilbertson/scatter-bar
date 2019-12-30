@@ -1,8 +1,7 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 20px 30px;
+  padding: 8px 16px;
   background: var(--color-blue--900);
   flex-direction: column;
 }
@@ -28,6 +27,17 @@
   padding: 5px;
 }
 
+.share {
+  margin-top: 8px;
+  padding: 8px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+  color: white;
+}
+
 .page {
   padding: 0;
   width: 100%;
@@ -47,11 +57,18 @@
 @media screen and (min-width: 600px) {
   .header {
     flex-direction: row;
+    padding: 16px;
   }
 
   .select {
     margin-top: 0;
+    margin-left: auto;
     max-width: 300px;
+  }
+
+  .share {
+    margin-top: 0;
+    margin-left: 16px;
   }
 
   .page {

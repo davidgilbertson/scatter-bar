@@ -5,6 +5,7 @@ import styles from './App.module.css';
 import Chart from '../Chart/Chart';
 import Table from '../Table/Table';
 import * as utlUtils from '../utils/urlUtils';
+import * as shareApi from '../utils/shareApi';
 import init from '../utils/init';
 import { KEYS } from '../utils/storage';
 
@@ -53,6 +54,10 @@ const App = ({store}) => {
 
           <option value="NEW STORY">Add a new story</option>
         </select>
+
+        <button className={styles.share} onClick={shareApi.share}>
+          {shareApi.canShare() ? 'Share' : 'Tweet'}
+        </button>
       </header>
 
       {!urlHasId && (
