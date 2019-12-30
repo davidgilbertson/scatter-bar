@@ -7,7 +7,7 @@ import {
 } from 'react-testing-library';
 import App from '../App/App';
 
-describe('Display', async () => {
+describe('Display', () => {
   afterAll(cleanup);
 
   const {

@@ -8,7 +8,7 @@ import {
 } from 'react-testing-library';
 import App from '../App/App';
 
-describe('Stories', async () => {
+describe('Stories', () => {
   cleanup();
   localStorage.clear();
 
