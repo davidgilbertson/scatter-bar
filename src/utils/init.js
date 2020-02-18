@@ -1,12 +1,12 @@
 import throttle from 'lodash.throttle';
 import { afterChange, store } from 'react-recollect';
-import api from '../data/api';
+import cab from '../data/cab';
 import * as storage from './storage';
 import * as log from './log';
 import mockData from '../data/mock';
 import * as urlUtils from './urlUtils';
 
-const throttledApiUpdate = throttle(api.update, 2000);
+const throttledUpdate = throttle(cab.update, 2000);
 
 const loadLocalData = () => {
   // To transition, take data from local storage if there is any
@@ -24,36 +24,36 @@ const createNewData = async () => {
   const localData = loadLocalData();
 
   // And also save that data back to the database
-  const response = await api.create(localData);
+  const {error, id} = await cab.create(localData);
 
-  if (response.error) {
+  if (error) {
     // At this point we're toast. Do nothing. It's going to retry on change anyway
-    console.error('Error creating a new record:', response.error);
+    console.error('Error creating a new record:', error);
   } else {
     // Data is saved, it's already in the store so we just need to store the id too
-    store.id = response.id;
+    store.id = id;
 
-    storage.setItem(storage.KEYS.ID, response.id);
+    storage.setItem(storage.KEYS.ID, id);
   }
 };
 
 const loadData = async id => {
-  const response = await api.read(id);
+  const {error, data} = await cab.read(id);
 
-  if (response.error) {
+  if (error) {
     // Oh no! No data.
-    console.error('Error fetching data:', response.error);
+    console.error('Error fetching data:', error);
 
     // This must be a bad ID. Wipe all traces of it
     wipeId();
 
     // And start from scratch
     await createNewData();
-  } else if ('stories' in response && 'currentStoryIndex' in response) {
+  } else if ('stories' in data && 'currentStoryIndex' in data) {
     // Good, we got some data. Let's put it in the store.
     store.id = id;
-    store.stories = response.stories;
-    store.currentStoryIndex = response.currentStoryIndex || 0;
+    store.stories = data.stories;
+    store.currentStoryIndex = data.currentStoryIndex || 0;
     store.status = 'ready';
   } else {
     // How odd, the data returned didn't have stories and currentStoryIndex props!
@@ -97,7 +97,7 @@ const init = async () => {
       console.warn('It is odd that there is no ID');
     } else {
       // update the store, but not too often
-      throttledApiUpdate(currentId, data);
+      throttledUpdate(currentId, data);
     }
   });
 };
