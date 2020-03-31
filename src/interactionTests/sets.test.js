@@ -1,25 +1,20 @@
 import React from 'react';
-import {
-  render,
-  cleanup,
-  within,
-  wait,
-} from 'react-testing-library';
+import { render, waitFor, within } from '@testing-library/react';
 import App from '../App/App';
+import init from '../utils/init';
 
-describe('Display', () => {
-  cleanup();
+test('Display', async () => {
   localStorage.clear();
+  init();
 
   const {
     getByTestId,
   } = render(<App />);
 
-
-  it('Sets > Given a story with two sets, then two sets should be rendered', async () => {
-    await wait(() => getByTestId('Table'));
-    const table = getByTestId('Table');
-    expect(within(table).getByText('Random set 1')).toBeInTheDocument();
-    expect(within(table).getByText('Random set 2')).toBeInTheDocument();
-  });
+  // Sets > Given a story with two sets, then two sets should be rendered
+  await waitFor(() => getByTestId('Table'));
+  
+  const table = getByTestId('Table');
+  expect(within(table).getByText('Random set 1')).toBeInTheDocument();
+  expect(within(table).getByText('Random set 2')).toBeInTheDocument();
 });

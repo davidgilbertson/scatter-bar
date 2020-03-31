@@ -5,7 +5,7 @@ import Button from '../Button/Button';
 import TableRow from '../TableRow/TableRow';
 import EditableText from '../EditableText/EditableText';
 import Panel from '../Panel/Panel';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import removeById from '../utils/removeById';
 
 const Table = ({store}) => {

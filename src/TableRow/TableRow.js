@@ -22,9 +22,11 @@ class TableRow extends Component {
   componentDidMount() {
     // We want to auto-focus the input for a newly added set
     if (this.props.set.new) {
-      delete this.props.set.new;
+      setTimeout(() => {
+        delete this.props.set.new;
 
-      this.inputEl.current.focus();
+        this.inputEl.current.focus();
+      });
     }
   }
 

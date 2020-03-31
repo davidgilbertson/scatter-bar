@@ -1,68 +1,61 @@
 import React from 'react';
-import {
-  render,
-  fireEvent,
-  cleanup,
-  wait,
-} from 'react-testing-library';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import App from '../App/App';
+import init from '../utils/init';
 
-describe('Display', () => {
-  afterAll(cleanup);
-
+test('Display', async () => {
+  init();
+  
   const {
+    container,
+    getByTestId,
     getByText,
     queryByTestId,
-    getByTestId,
-    container,
-  } = render(<App />);
+    getAllByText,
+  } = render(<App/>);
 
+  // Stories > Given a story with some sets, then a data panel and chart should be rendered'
+  await waitFor(() => getAllByText('An example: 9% random variation'));
 
-  it('Stories > Given a story with some sets, then a data panel and chart should be rendered', async () => {
-    await wait(() => getByText('An example: 9% random variation'));
+  expect(getByTestId('Table')).toBeInTheDocument();
+  expect(getByTestId('Chart')).toBeInTheDocument();
+  expect(getAllByText('Random set 1')).toHaveLength(2);
+  expect(getAllByText('Random set 2')).toHaveLength(2);
+  expect(queryByTestId('cats')).not.toBeInTheDocument();
 
-    expect(getByTestId('Table')).toBeInTheDocument();
-    expect(getByTestId('Chart')).toBeInTheDocument();
-    expect(getByText('Random set 1')).toBeInTheDocument();
-    expect(getByText('Random set 2')).toBeInTheDocument();
-    expect(queryByTestId('cats')).not.toBeInTheDocument();
+  // Sets > When "Add a new set" is clicked, a new set is added
+  const addScenarioButton = getByText('Add a new set');
+  fireEvent.click(addScenarioButton);
+  expect(getAllByText('A new set')).toHaveLength(2);
+
+  // Sets > When a set name is clicked, a new set name can be typed
+  const newSet = getAllByText('A new set')[0];
+
+  expect(queryByTestId('EditableText__test-area')).not.toBeInTheDocument();
+
+  fireEvent.click(newSet);
+
+  await waitFor(() => {}); // after the click, events are bound on the next tick
+
+  expect(queryByTestId('EditableText__test-area')).toBeInTheDocument();
+
+  const newSetTextarea = getAllByText('A new set')[0];
+
+  fireEvent.change(newSetTextarea, {
+    target: {
+      value: 'The new name of the thing',
+    },
   });
 
-  test('Sets > When "Add a new set" is clicked, a new set is added', () => {
-    const addScenarioButton = getByText('Add a new set');
-    fireEvent.click(addScenarioButton);
-    expect(getByText('A new set')).toBeInTheDocument();
+  expect(getAllByText('The new name of the thing')).toHaveLength(2);
+
+  fireEvent.keyPress(newSetTextarea, {
+    key: 'Escape',
   });
 
-  test('Sets > When a set name is clicked, a new set name can be typed', async () => {
-    const newSet = getByText('A new set');
+  fireEvent.click(container);
 
+  await waitFor(() => {
     expect(queryByTestId('EditableText__test-area')).not.toBeInTheDocument();
-
-    fireEvent.click(newSet);
-
-    await wait(); // after the click, events are bound on the next tick
-
-    expect(queryByTestId('EditableText__test-area')).toBeInTheDocument();
-
-    const newSetTextarea = getByText('A new set');
-
-    fireEvent.change(newSetTextarea, {
-      target: {
-        value: 'The new name of the thing',
-      },
-    });
-
-    expect(getByText('The new name of the thing')).toBeInTheDocument();
-
-    fireEvent.keyPress(newSetTextarea, {
-      key: 'Escape',
-    });
-
-    fireEvent.click(container);
-
-    await wait(() => {
-      expect(queryByTestId('EditableText__test-area')).not.toBeInTheDocument();
-    });
   });
 });

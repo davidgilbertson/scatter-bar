@@ -1,5 +1,5 @@
 import throttle from 'lodash.throttle';
-import { afterChange, store } from 'react-recollect';
+import { afterChange, store, initStore, batch } from 'react-recollect';
 import cab from '../data/cab';
 import * as storage from './storage';
 import * as log from './log';
@@ -8,13 +8,22 @@ import * as urlUtils from './urlUtils';
 
 const throttledUpdate = throttle(cab.update, 2000);
 
+initStore({
+  id: null,
+  stories: [],
+  currentStoryIndex: 0,
+  status: null,
+});
+
 const loadLocalData = () => {
   // To transition, take data from local storage if there is any
   // (new version don't bother)
   const data = storage.getItem(storage.KEYS.APP_DATA) || mockData;
-  store.stories = data.stories;
-  store.currentStoryIndex = data.currentStoryIndex || 0;
-  store.status = 'ready';
+  batch(() => {
+    store.stories = data.stories;
+    store.currentStoryIndex = data.currentStoryIndex || 0;
+    store.status = 'ready';
+  });
 
   return data;
 };
@@ -51,10 +60,12 @@ const loadData = async id => {
     await createNewData();
   } else if ('stories' in data && 'currentStoryIndex' in data) {
     // Good, we got some data. Let's put it in the store.
-    store.id = id;
-    store.stories = data.stories;
-    store.currentStoryIndex = data.currentStoryIndex || 0;
-    store.status = 'ready';
+    batch(() => {
+      store.id = id;
+      store.stories = data.stories;
+      store.currentStoryIndex = data.currentStoryIndex || 0;
+      store.status = 'ready';
+    });
   } else {
     // How odd, the data returned didn't have stories and currentStoryIndex props!
     console.warn('The data returned was poorly formed');
@@ -70,6 +81,7 @@ const wipeId = () => {
   window.history.replaceState({}, '', urlUtils.getWithId());
 };
 
+/** @returns void */
 const init = async () => {
   log.time('Time to interactive');
 
@@ -84,10 +96,10 @@ const init = async () => {
   }
 
   // Now the initial load is done, we can start listening for changes
-  afterChange(({store}) => {
+  afterChange(e => {
     const data = {
-      stories: store.stories,
-      currentStoryIndex: store.currentStoryIndex,
+      stories: e.store.stories,
+      currentStoryIndex: e.store.currentStoryIndex,
     };
 
     storage.setItem(storage.KEYS.APP_DATA, data);
